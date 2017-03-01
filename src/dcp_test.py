@@ -11,7 +11,11 @@ import knpackage.toolbox as kn
 
 
 def test_data_cleanup(run_parameters, run_cleanup=True):
-    """ test_result_df = test_samples_clustering_cleanup(run_parameters) """
+    """ test_samples_clustering_cleanup(run_parameters, run_cleanup) 
+    Args:
+        run_parameters: with keys - pipeline_type, spreadsheet_data_dir (opt pheno_data_dir)
+        run_cleanup:    (default True) set to false to display files processed only
+    """
     
     import data_cleanup_toolbox as dc
     
@@ -62,6 +66,17 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         test_result_df.loc[spreadsheet_file, 'message'] = message
         test_result_df.loc[spreadsheet_file, 'cleanup_time'] = tt
         test_result_df.loc[spreadsheet_file, 'validation_flag'] = validation_flag
+        
+        try:
+            tmp_df = pd.read_csv(run_parameters['spreadsheet_name_full_path'], sep='\t', header=0, index_col=0)
+            test_result_df.loc[spreadsheet_file, 'spreadsheet_rows'] = tmp_df.shape[0]
+            test_result_df.loc[spreadsheet_file, 'spreadsheet_cols'] = tmp_df.shape[1]
+            if phenotype_file != 0:
+                tmp_df = pd.read_csv(run_parameters['spreadsheet_name_full_path'], sep='\t', header=0, index_col=0)
+                test_result_df.loc[spreadsheet_file, 's'] = tmp_df.shape[0]
+                test_result_df.loc[spreadsheet_file, 'p'] = tmp_df.shape[1]
+        except:
+            pass
     
     result_df_file_name = 'Empty'
     if run_cleanup and not test_result_df.empty:
@@ -69,8 +84,8 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         result_df_file_name = kn.create_timestamped_filename(result_df_file_name) + '.tsv'
         test_result_df.to_csv(result_df_file_name, sep='\t', index=True, header=True, na_rep='NA')
         print('\n\tResults file\n%s\n'%result_df_file_name)
-            
-    return
+    
+    return test_result_df
 
 
 def get_spreadsheets_for_pheno(pheno_file, sp_list):
@@ -86,7 +101,7 @@ def get_spreadsheets_for_pheno(pheno_file, sp_list):
 def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir=None):
     """ test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir) """
     
-    col_list = ['phenotype_file','validation_flag','message','spreadsheet_rows','spreadsheet_cols','cleanup_time']
+    col_list = ['phenotype_file','s','p','validation_flag','message','spreadsheet_rows','spreadsheet_cols','cleanup_time']
     
     spreadsheet_file_list = sorted(os.listdir(spreadsheet_data_dir))
     
