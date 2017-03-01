@@ -64,11 +64,12 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         test_result_df.loc[spreadsheet_file, 'validation_flag'] = validation_flag
     
     result_df_file_name = 'Empty'
-    if not test_result_df.empty:
+    if run_cleanup and not test_result_df.empty:
         result_df_file_name = os.path.join(run_parameters['results_directory'], pipeline_type)
         result_df_file_name = kn.create_timestamped_filename(result_df_file_name) + '.tsv'
         test_result_df.to_csv(result_df_file_name, sep='\t', index=True, header=True, na_rep='NA')
-    print('\nWriting\n%s\n'%result_df_file_name)
+        print('\n\tResults file\n%s\n'%result_df_file_name)
+            
     return
 
 
