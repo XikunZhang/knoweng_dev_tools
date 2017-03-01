@@ -9,6 +9,10 @@ import pandas as pd
 
 import knpackage.toolbox as kn
 
+# IF NOT on Path: insert Data_Cleanup_Pipeline/src absolute path here and uncomment
+# sys.path.insert(1, '/Users/lanier4/dlanier_KnowEnG/Data_Cleanup_Pipeline/src')
+import data_cleanup_toolbox as dc
+
 
 def test_data_cleanup(run_parameters, run_cleanup=True):
     """ test_samples_clustering_cleanup(run_parameters, run_cleanup) 
@@ -17,7 +21,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         run_cleanup:    (default True) set to false to display files processed only
     """
     
-    import data_cleanup_toolbox as dc
+    
     
     pipeline_type = run_parameters['pipeline_type']
     print('\n\tStart testing %s at %s'%(pipeline_type, time.strftime("%c", time.localtime() ) ) )
@@ -124,7 +128,7 @@ def main():
     from knpackage.toolbox import get_run_directory_and_file, get_run_parameters
     run_directory, run_file = get_run_directory_and_file(sys.argv)
     run_parameters = get_run_parameters(run_directory, run_file)
-    
+        
     pipeline_type = run_parameters['pipeline_type']
     run_parameters['results_directory'] = kn.create_dir(os.getcwd(), pipeline_type)
 
