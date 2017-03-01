@@ -72,7 +72,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
             test_result_df.loc[spreadsheet_file, 'spreadsheet_rows'] = tmp_df.shape[0]
             test_result_df.loc[spreadsheet_file, 'spreadsheet_cols'] = tmp_df.shape[1]
             if phenotype_file != 0:
-                tmp_df = pd.read_csv(run_parameters['spreadsheet_name_full_path'], sep='\t', header=0, index_col=0)
+                tmp_df = pd.read_csv(run_parameters['phenotype_full_path'], sep='\t', header=0, index_col=0)
                 test_result_df.loc[spreadsheet_file, 's'] = tmp_df.shape[0]
                 test_result_df.loc[spreadsheet_file, 'p'] = tmp_df.shape[1]
         except:
