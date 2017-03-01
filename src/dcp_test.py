@@ -10,45 +10,58 @@ import pandas as pd
 import knpackage.toolbox as kn
 
 
-def test_data_cleanup(run_parameters):
+def test_data_cleanup(run_parameters, run_cleanup=True):
     """ test_result_df = test_samples_clustering_cleanup(run_parameters) """
+    
+    import data_cleanup_toolbox as dc
+    
     pipeline_type = run_parameters['pipeline_type']
     print('\n\tStart testing %s at %s'%(pipeline_type, time.strftime("%c", time.localtime() ) ) )
     
-    # sys.path.append('../Data_Cleanup_Pipeline/src')
-    import data_cleanup_toolbox as dc
     spreadsheet_data_dir = run_parameters['spreadsheet_data_dir']
-    pheno_data_dir = run_parameters['pheno_data_dir']
+    
+    if pipeline_type == 'geneset_characterization_pipeline' or pipeline_type == 'geneset_characterization':
+        pheno_data_dir = None
+    else:
+        pheno_data_dir = run_parameters['pheno_data_dir']
     
     test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir)
     
     for spreadsheet_file in list(test_result_df.index):
-        phenotype_file = test_result_df.loc[spreadsheet_file, 'phenotype_file']
-        print('\n', phenotype_file)
-        if phenotype_file != 0:
-            print('\t', spreadsheet_file)
-            run_parameters['spreadsheet_name_full_path'] = os.path.join(spreadsheet_data_dir, spreadsheet_file)
-            run_parameters['phenotype_full_path'] = os.path.join(pheno_data_dir, phenotype_file)
-            
-            tt = 0.0
-            validation_flag = False
-            message = "Failed to finish"
+        tt = 0.0
+        validation_flag = False
+        message = "Failed to finish"
 
-            try:
-                t0 = time.time()
-                if pipeline_type == 'samples_clustering_pipeline' or pipeline_type == 'samples_clustering':
-                    validation_flag, message = dc.run_samples_clustering_pipeline(run_parameters)
-                elif pipeline_type == 'gene_priorization_pipeline' or pipeline_type == 'gene_prioritization':
-                    validation_flag, message = dc.run_gene_priorization_pipeline(run_parameters)
-                elif pipeline_type == 'geneset_characterization_pipeline' or pipeline_type == 'geneset_characterization':
-                    validation_flag, message = dc.run_geneset_characterization_pipeline(run_parameters)
-                tt = time.time() - t0
-            except:
-                pass
+        run_parameters['spreadsheet_name_full_path'] = os.path.join(spreadsheet_data_dir, spreadsheet_file)
+        phenotype_file = test_result_df.loc[spreadsheet_file, 'phenotype_file']
+        if phenotype_file != 0:
+            print('\n', phenotype_file)
+            print('\t', spreadsheet_file)
+            run_parameters['phenotype_full_path'] = os.path.join(pheno_data_dir, phenotype_file)
+            if run_cleanup:
+                try:
+                    t0 = time.time()
+                    if pipeline_type == 'samples_clustering_pipeline' or pipeline_type == 'samples_clustering':
+                        validation_flag, message = dc.run_samples_clustering_pipeline(run_parameters)
+                    elif pipeline_type == 'gene_priorization_pipeline' or pipeline_type == 'gene_prioritization':
+                        validation_flag, message = dc.run_gene_priorization_pipeline(run_parameters)
+                    tt = time.time() - t0
+                except:
+                    pass
             
-            test_result_df.loc[spreadsheet_file, 'message'] = message
-            test_result_df.loc[spreadsheet_file, 'cleanup_time'] = tt
-            test_result_df.loc[spreadsheet_file, 'validation_flag'] = validation_flag
+        elif pipeline_type == 'geneset_characterization_pipeline' or pipeline_type == 'geneset_characterization':
+            print('\t', spreadsheet_file)
+            if run_cleanup:
+                try:
+                    t0 = time.time()
+                    validation_flag, message = dc.run_geneset_characterization_pipeline(run_parameters)
+                    tt = time.time() - t0
+                except:
+                    pass
+            
+        test_result_df.loc[spreadsheet_file, 'message'] = message
+        test_result_df.loc[spreadsheet_file, 'cleanup_time'] = tt
+        test_result_df.loc[spreadsheet_file, 'validation_flag'] = validation_flag
     
     result_df_file_name = 'Empty'
     if not test_result_df.empty:
@@ -69,21 +82,23 @@ def get_spreadsheets_for_pheno(pheno_file, sp_list):
     return sorted(spreadsheet_list)
 
 
-def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir):
+def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir=None):
     """ test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir) """
     
     col_list = ['phenotype_file','validation_flag','message','spreadsheet_rows','spreadsheet_cols','cleanup_time']
     
-    pheno_file_list = sorted(os.listdir(pheno_data_dir))
     spreadsheet_file_list = sorted(os.listdir(spreadsheet_data_dir))
     
     test_result_df = pd.DataFrame(data=np.zeros((len(spreadsheet_file_list), len(col_list))),
                                   index=spreadsheet_file_list, columns=col_list)
     
-    for pheno_file in pheno_file_list:
-        spreadsheet_list = get_spreadsheets_for_pheno(pheno_file, spreadsheet_file_list)
-        for spreadsheet_file in spreadsheet_list:
-            test_result_df.loc[spreadsheet_file, 'phenotype_file'] = pheno_file
+    if pheno_data_dir is not None:
+        pheno_file_list = sorted(os.listdir(pheno_data_dir))
+        for pheno_file in pheno_file_list:
+            spreadsheet_list = get_spreadsheets_for_pheno(pheno_file, spreadsheet_file_list)
+            for spreadsheet_file in spreadsheet_list:
+                test_result_df.loc[spreadsheet_file, 'phenotype_file'] = pheno_file
+    
     return test_result_df
 
 
@@ -94,7 +109,7 @@ def main():
     run_directory, run_file = get_run_directory_and_file(sys.argv)
     run_parameters = get_run_parameters(run_directory, run_file)
     
-    pipeline_type = run_parameters['pipeline_type')
+    pipeline_type = run_parameters['pipeline_type']
     run_parameters['results_directory'] = kn.create_dir(os.getcwd(), pipeline_type)
 
     for k in sorted(run_parameters.keys()):
