@@ -105,12 +105,14 @@ def get_spreadsheets_for_pheno(pheno_file, sp_list):
 def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir=None):
     """ test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir) """
     
-    col_list = ['phenotype_file','s','p','validation_flag','message','spreadsheet_rows','spreadsheet_cols','cleanup_time']
+    col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time']
     
     spreadsheet_file_list = sorted(os.listdir(spreadsheet_data_dir))
     
     test_result_df = pd.DataFrame(data=np.zeros((len(spreadsheet_file_list), len(col_list))),
                                   index=spreadsheet_file_list, columns=col_list)
+    
+    test_result_df.index.name = 'genes_x_samples'
     
     if pheno_data_dir is not None:
         pheno_file_list = sorted(os.listdir(pheno_data_dir))
