@@ -107,8 +107,14 @@ def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir=Non
     
     col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time']
     
-    spreadsheet_file_list = sorted(os.listdir(spreadsheet_data_dir))
-    
+    spreadsheet_file_list_0 = sorted(os.listdir(spreadsheet_data_dir))
+    spreadsheet_file_list = []
+    for l in spreadsheet_file_list_0:
+        if l[0] == '.' or os.path.isdir(os.path.join(spreadsheet_data_dir, l)):
+            pass
+        elif l.find('.G.') >= 0:
+            spreadsheet_file_list.append(l)
+            
     test_result_df = pd.DataFrame(data=np.zeros((len(spreadsheet_file_list), len(col_list))),
                                   index=spreadsheet_file_list, columns=col_list)
     
