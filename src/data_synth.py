@@ -29,10 +29,16 @@ def get_nodes_from_spreadsheet(SSArr):
                 nw_row += 1
     return nw
 
-def get_clustered_spreadsheet(n_clusters, cluster_width, row_multiplier=1):
-    """ synthetic spreadsheet data with n_clusters (2 : 7) of n_clusters * cluster_width samplse """
-    n_clusters_array = np.array([3,4,5,7])
-    nrows = np.product(n_clusters_array*row_multiplier)
+def get_clustered_spreadsheet(n_clusters, cluster_width, nrows=12):
+    """ synthetic spreadsheet data with n_clusters (2 : 7) of n_clusters * cluster_width samples 
+    Args:
+        n_clusters:       number of distinct clusters
+        cluster_width:    how many columns for each cluster
+        nrows:            how many rows in the output
+        
+    Returns:
+        spreadsheet_mat: 
+    """
     ncols = n_clusters * cluster_width
 
     SSArr = np.zeros((nrows, ncols))
@@ -184,12 +190,16 @@ def base_coef_arr(big_n, bas, arr_len):
 
 def append_dictionary_file(full_file, run_pars):
     """ Append or create a log file using yaml compatible format """
+    writ_status = 'Unk'
     try:
         with open(full_file, 'a') as appendectomyfile:
-            for p in run_pars:
-                appendectomyfile.write('{}: {}\n'.format(p, run_pars[p]))
+            for p in sorted(run_pars.keys()):
+                appendectomyfile.write('\n%s:\t\t%s\n'%(p, run_pars[p]))
+        writ_status = 'OK'
     except:
         print('an err occurred while trying to append dictionary file')
+    return writ_status
+    
 
 def get_test_paramters_dictionary():
     """ universal dctionary of run parameters """
