@@ -9,7 +9,7 @@ import pandas as pd
 
 import knpackage.toolbox as kn
 
-# IF NOT on Path: insert Data_Cleanup_Pipeline/src absolute path here and uncomment
+# IF Data_Cleanup_Pipeline/src is NOT on Path; insert the absolute path & uncomment next line.
 # sys.path.insert(1, '/Users/lanier4/dlanier_KnowEnG/Data_Cleanup_Pipeline/src')
 import data_cleanup_toolbox as dc
 
