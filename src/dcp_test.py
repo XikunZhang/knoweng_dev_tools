@@ -41,7 +41,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         message = "Failed to finish"
 
         run_parameters['spreadsheet_name_full_path'] = os.path.join(spreadsheet_data_dir, spreadsheet_file)
-        phenotype_file = test_result_df.loc[spreadsheet_file, 'phenotype_file']
+        phenotype_file = test_result_df.loc[spreadsheet_file, 'samples_phenotypes']
         if phenotype_file != 0:
             print('\n', phenotype_file)
             print('\t', spreadsheet_file)
@@ -70,11 +70,11 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         test_result_df.loc[spreadsheet_file, 'message'] = message
         test_result_df.loc[spreadsheet_file, 'cleanup_time'] = tt
         test_result_df.loc[spreadsheet_file, 'validation_flag'] = validation_flag
-        
+        #col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time']
         try:
             tmp_df = pd.read_csv(run_parameters['spreadsheet_name_full_path'], sep='\t', header=0, index_col=0)
-            test_result_df.loc[spreadsheet_file, 'spreadsheet_rows'] = tmp_df.shape[0]
-            test_result_df.loc[spreadsheet_file, 'spreadsheet_cols'] = tmp_df.shape[1]
+            test_result_df.loc[spreadsheet_file, 'genes'] = tmp_df.shape[0]
+            test_result_df.loc[spreadsheet_file, 'samples'] = tmp_df.shape[1]
             if phenotype_file != 0:
                 tmp_df = pd.read_csv(run_parameters['phenotype_full_path'], sep='\t', header=0, index_col=0)
                 test_result_df.loc[spreadsheet_file, 's'] = tmp_df.shape[0]
@@ -119,7 +119,7 @@ def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir=Non
         for pheno_file in pheno_file_list:
             spreadsheet_list = get_spreadsheets_for_pheno(pheno_file, spreadsheet_file_list)
             for spreadsheet_file in spreadsheet_list:
-                test_result_df.loc[spreadsheet_file, 'phenotype_file'] = pheno_file
+                test_result_df.loc[spreadsheet_file, 'samples_phenotypes'] = pheno_file
     
     return test_result_df
 
