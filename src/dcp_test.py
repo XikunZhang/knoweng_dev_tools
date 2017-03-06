@@ -53,7 +53,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                         validation_flag, message = dc.run_gene_priorization_pipeline(run_parameters)
                     tt = time.time() - t0
                 except:
-                    err_message = sys.exc_info()
+                    err_message = str(sys.exc_info())
                     print("Unexpected error: {}".format(err_message))
                     pass
             
@@ -65,7 +65,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                     validation_flag, message = dc.run_geneset_characterization_pipeline(run_parameters)
                     tt = time.time() - t0
                 except:
-                    err_message = sys.exc_info()
+                    err_message = str(sys.exc_info())
                     print("Unexpected error: {}".format(err_message))
                     pass
             
@@ -84,7 +84,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                 test_result_df.loc[spreadsheet_file, 's'] = tmp_df.shape[0]
                 test_result_df.loc[spreadsheet_file, 'p'] = tmp_df.shape[1]
         except:
-            err_message = sys.exc_info()
+            err_message = str(sys.exc_info())
             print("Unexpected error: {}".format(err_message))
             pass
 
