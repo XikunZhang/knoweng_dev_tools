@@ -20,9 +20,6 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         run_parameters: with keys - pipeline_type, spreadsheet_data_dir (opt pheno_data_dir)
         run_cleanup:    (default True) set to false to display files processed only
     """
-    
-    
-    
     pipeline_type = run_parameters['pipeline_type']
     print('\n\tStart testing %s at %s'%(pipeline_type, time.strftime("%c", time.localtime() ) ) )
     
@@ -39,6 +36,7 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         tt = 0.0
         validation_flag = False
         message = "Failed to finish"
+        err_message = ''
 
         run_parameters['spreadsheet_name_full_path'] = os.path.join(spreadsheet_data_dir, spreadsheet_file)
         phenotype_file = test_result_df.loc[spreadsheet_file, 'samples_phenotypes']
@@ -55,6 +53,8 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                         validation_flag, message = dc.run_gene_priorization_pipeline(run_parameters)
                     tt = time.time() - t0
                 except:
+                    err_message = str(sys.exc_info())
+                    print("Unexpected error: {}".format(err_message))
                     pass
             
         elif pipeline_type == 'geneset_characterization_pipeline' or pipeline_type == 'geneset_characterization':
@@ -65,12 +65,16 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                     validation_flag, message = dc.run_geneset_characterization_pipeline(run_parameters)
                     tt = time.time() - t0
                 except:
+                    err_message = str(sys.exc_info())
+                    print("Unexpected error: {}".format(err_message))
                     pass
             
         test_result_df.loc[spreadsheet_file, 'message'] = message
         test_result_df.loc[spreadsheet_file, 'cleanup_time'] = tt
         test_result_df.loc[spreadsheet_file, 'validation_flag'] = validation_flag
-        #col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time']
+        test_result_df.loc[spreadsheet_file, 'err_message'] = err_message
+
+    #col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time']
         try:
             tmp_df = pd.read_csv(run_parameters['spreadsheet_name_full_path'], sep='\t', header=0, index_col=0)
             test_result_df.loc[spreadsheet_file, 'genes'] = tmp_df.shape[0]
@@ -80,9 +84,10 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                 test_result_df.loc[spreadsheet_file, 's'] = tmp_df.shape[0]
                 test_result_df.loc[spreadsheet_file, 'p'] = tmp_df.shape[1]
         except:
+            err_message = str(sys.exc_info())
+            print("Unexpected error: {}".format(err_message))
             pass
-    
-    result_df_file_name = 'Empty'
+
     if run_cleanup and not test_result_df.empty:
         result_df_file_name = os.path.join(run_parameters['results_directory'], pipeline_type)
         result_df_file_name = kn.create_timestamped_filename(result_df_file_name) + '.tsv'
@@ -105,7 +110,7 @@ def get_spreadsheets_for_pheno(pheno_file, sp_list):
 def get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir=None):
     """ test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir) """
     
-    col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time']
+    col_list = ['genes','samples','samples_phenotypes','s','p','validation_flag','message','cleanup_time', 'err_message']
     
     spreadsheet_file_list_0 = sorted(os.listdir(spreadsheet_data_dir))
     spreadsheet_file_list = []
