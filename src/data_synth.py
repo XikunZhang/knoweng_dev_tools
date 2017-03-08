@@ -10,11 +10,10 @@ from scipy.sparse import csgraph
 import yaml
 
 def get_rand_dataframe(n_rows, n_cols, row_name_chars=5, col_name_chars=8):
-    """ get a radom number dataframe for test or whatever """
-    return pd.DataFrame(
-        np.random.random((n_rows, n_cols)),
-        index=get_rand_unique_name_list(n_rows, row_name_chars),
-        columns=get_rand_unique_name_list(n_cols, col_name_chars))
+    """ get a radom names and numbers dataframe """
+    return pd.DataFrame(np.random.random((n_rows, n_cols)),
+                        index=get_rand_unique_name_list(n_rows, row_name_chars),
+                        columns=get_rand_unique_name_list(n_cols, col_name_chars))
 
 def get_nodes_from_spreadsheet(SSArr):
     """ get the .edge set from a spreadsheet """

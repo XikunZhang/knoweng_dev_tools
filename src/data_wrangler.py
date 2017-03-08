@@ -7,6 +7,12 @@ import time
 import numpy as np
 
 
+def show_dictionary(a_dict):
+    """ display a set of run parameters """
+    for k in sorted(a_dict.keys()):
+        print(k,':\t',a_dict[k])
+    
+    
 def show_matrix(A, n_dec=3):
     """ Display a matrix (nicely) with a fixed number of decimal places.
     """
