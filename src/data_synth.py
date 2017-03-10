@@ -9,6 +9,38 @@ import scipy.sparse as spar
 from scipy.sparse import csgraph
 import yaml
 
+
+def get_random_phenotype_data_for_samples(samples_list, n_cols):
+    pheno_data_names = get_rand_unique_name_list(n_names=n_cols, name_length=7)
+    pheno_data_df = pd.DataFrame(data=None, index=samples_list, columns=pheno_data_names)
+    
+    for col_name in pheno_data_names:
+        col_values, col_type = get_random_col(col_size=5)
+        pheno_data_df[col_name] = col_values
+    return pheno_data_df
+
+
+def get_random_col(col_size):
+    rand_types = {'catagorical': get_rand_catagorical, 'boolean': get_rand_boolean,
+                  'integer': get_rand_integer, 'positive': get_rand_positive,
+                  'real':get_rand_real}
+    rand_types_names = list(rand_types.keys())
+    n_items = len(rand_types_names)
+    col_type = rand_types_names[np.random.randint(n_items)]
+    return list(rand_types[col_type](n_items)), col_type
+
+def get_rand_catagorical(n_items):
+    return get_rand_unique_name_list(n_items, (3 + np.random.randint(9)) )
+def get_rand_boolean(n_items):
+    return (np.random.random(n_items) > 0.5)
+def get_rand_integer(n_items):
+    return np.random.randint(0,5,n_items)
+def get_rand_positive(n_items):
+    return np.random.random(n_items) * 10**(np.round(np.random.randint(6)))
+def get_rand_real(n_items):
+    return np.random.randn(n_items) * 10**(np.round(np.random.randint(6)))
+
+
 def get_rand_dataframe(n_rows, n_cols, row_name_chars=5, col_name_chars=8):
     """ get a radom names and numbers dataframe """
     return pd.DataFrame(np.random.random((n_rows, n_cols)),
