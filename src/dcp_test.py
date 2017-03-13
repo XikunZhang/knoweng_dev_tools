@@ -7,14 +7,15 @@ import time
 import numpy as np
 import pandas as pd
 
-import knpackage.toolbox as kn
-
 # IF Data_Cleanup_Pipeline/src is NOT on Path; insert the absolute path & uncomment next line.
-# sys.path.insert(1, '/Users/lanier4/dlanier_KnowEnG/Data_Cleanup_Pipeline/src')
+sys.path.insert(1, '../../Data_Cleanup_Pipeline/src')
 import data_cleanup_toolbox as dc
 
+import knpackage.toolbox as kn
+
+
 def test_data_cleanup(run_parameters, run_cleanup=True):
-    """ test_samples_clustering_cleanup(run_parameters, run_cleanup) 
+    """ test_result_df = dcp_test.test_data_cleanup(run_parameters, run_cleanup) 
     Args:
         run_parameters: with keys - pipeline_type, spreadsheet_data_dir (opt pheno_data_dir)
         run_cleanup:    (default True) set to false to display files processed only
@@ -111,13 +112,16 @@ def get_spreadsheets_for_pheno(pheno_file, sp_list):
 
 def get_phenotype_spreadsheet_dataframe(spreadsheet_data_dir, pheno_data_dir=None):
     """ test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, pheno_data_dir) """
-    pheno_file_dir_list = sorted(os.listdir(pheno_data_dir))
+    
     pheno_file_list = []
-    for l in pheno_file_dir_list:
-        if l[0] == '.' or os.path.isdir(os.path.join(pheno_data_dir, l)):
-            pass
-        else:
-            pheno_file_list.append(l)
+    if pheno_data_dir is not None:
+        pheno_file_dir_list = sorted(os.listdir(pheno_data_dir))
+    
+        for l in pheno_file_dir_list:
+            if l[0] == '.' or os.path.isdir(os.path.join(pheno_data_dir, l)):
+                pass
+            else:
+                pheno_file_list.append(l)
 
     if len(pheno_file_list) < 1:
         test_result_df = get_spreadsheet_phenotype_dataframe(spreadsheet_data_dir, None)
