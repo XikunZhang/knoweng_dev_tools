@@ -20,8 +20,14 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         run_parameters: with keys - pipeline_type, spreadsheet_data_dir (opt pheno_data_dir)
         run_cleanup:    (default True) set to false to display files processed only
     """
+    if 'SHOW_COMMAND_LINE_OUTPUT' in run_parameters:
+        SHOW_COMMAND_LINE_OUTPUT = run_parameters['SHOW_COMMAND_LINE_OUTPUT']
+    else:
+        SHOW_COMMAND_LINE_OUTPUT = True
+        
     pipeline_type = run_parameters['pipeline_type']
-    print('\n\tStart testing %s at %s'%(pipeline_type, time.strftime("%c", time.localtime() ) ) )
+    if SHOW_COMMAND_LINE_OUTPUT: 
+        print('\n\tStart testing %s at %s'%(pipeline_type, time.strftime("%c", time.localtime() ) ) )
     
     spreadsheet_data_dir = run_parameters['spreadsheet_data_dir']
     
@@ -40,10 +46,10 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
 
         run_parameters['spreadsheet_name_full_path'] = os.path.join(spreadsheet_data_dir, spreadsheet_file)
         phenotype_file = test_result_df.loc[spreadsheet_file, 'samples_phenotypes']
-        print('\n', spreadsheet_file)
+        if SHOW_COMMAND_LINE_OUTPUT: print('\n', spreadsheet_file)
         if phenotype_file != 0:
 
-            print('\t', phenotype_file)
+            if SHOW_COMMAND_LINE_OUTPUT: print('\t', phenotype_file)
             run_parameters['phenotype_full_path'] = os.path.join(pheno_data_dir, phenotype_file)
             if run_cleanup:
                 try:
@@ -58,8 +64,8 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
                     print("Unexpected error: {}".format(err_message))
                     pass
             log_file_name = os.path.join(run_parameters['results_directory'], 'log_' + spreadsheet_file + phenotype_file)
+            
         elif pipeline_type == 'geneset_characterization_pipeline':
-            # print('\t', spreadsheet_file)
             if run_cleanup:
                 try:
                     t0 = time.time()
@@ -95,7 +101,6 @@ def test_data_cleanup(run_parameters, run_cleanup=True):
         result_df_file_name = os.path.join(run_parameters['results_directory'], pipeline_type)
         result_df_file_name = kn.create_timestamped_filename(result_df_file_name) + '.tsv'
         test_result_df.to_csv(result_df_file_name, sep='\t', index=True, header=True, na_rep='NA')
-        # print('\n\tResults file\n%s\n'%result_df_file_name)
     
     return test_result_df
 
@@ -154,7 +159,7 @@ def get_phenotype_spreadsheet_dataframe(spreadsheet_data_dir, pheno_data_dir=Non
                                         index=row_names, columns=col_list)
 
         test_result_df['samples_phenotypes'] = pheno_4_row_names
-        # print(test_result_df)
+        
     return test_result_df
 
 
