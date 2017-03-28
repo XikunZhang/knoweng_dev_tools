@@ -48,7 +48,7 @@ def cleanup_test_SC(run_parameters):
             validation_flag, message = dc.run_samples_clustering_pipeline(run_parameters)
             cleanup_runtime = time.time() - start_cleanup_time
             sc_test_list_df['STATUS'].loc[row_n] = validation_flag
-            sc_test_list_df['cleanup_runtime'] = '%0.4f'%(cleanup_runtime)
+            sc_test_list_df['cleanup_runtime'].loc[row_n] = '%0.4f'%(cleanup_runtime)
 
             log_filename = os.path.join(run_parameters["results_directory"], "log_samples_clustering_pipeline.yml")
             sc_test_list_df['message_logfile'].loc[row_n] = log_filename
