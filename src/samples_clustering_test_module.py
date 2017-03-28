@@ -1,6 +1,12 @@
 """
-dlanier@illinois.edu
-mradmstr514226508@gmail.com
+Usage:
+clone the keg_test_tools and Data_Cleanup_Pipeline to the same directory
+copy and edit (data, results) keg_test_tools/data/run_files/samples_clustering_cleanup.yml into:
+Data_Cleanup_Pipeline/src/    -- and change to this directory, then run the code
+
+python3 ../../keg_test_tools/src/samples_clustering_test_module.py -run_directory ./ -run_file samples_clustering_cleanup.yml
+
+wait, watch read the ouput file in run_parameters['results_directory']/samples_clustering_Pipeline.tsv
 """
 import os
 import sys
