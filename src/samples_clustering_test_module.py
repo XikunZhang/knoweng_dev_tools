@@ -4,6 +4,7 @@ mradmstr514226508@gmail.com
 """
 import os
 import sys
+import time
 
 import pandas as pd
 import numpy as np
@@ -27,6 +28,7 @@ def cleanup_test_SC(run_parameters):
     sc_test_list_df = get_SC_phenotype_viability_df(
         run_parameters['spreadsheet_data_dir'], run_parameters['pheno_data_dir'])
     sc_test_list_df['STATUS'] = 0
+    sc_test_list_df['cleanup_runtime'] = 0
     sc_test_list_df['message_logfile'] = 0
 
     for row_n in list(sc_test_list_df.index):
@@ -42,8 +44,11 @@ def cleanup_test_SC(run_parameters):
             dir_extra = '_' + spreadsheet_name + '_' + phenotype_name
             run_parameters['results_directory'] = kn.create_dir(results_directory_base, dir_extra)
 
+            start_cleanup_time = time.time()
             validation_flag, message = dc.run_samples_clustering_pipeline(run_parameters)
+            cleanup_runtime = time.time() - start_cleanup_time
             sc_test_list_df['STATUS'].loc[row_n] = validation_flag
+            sc_test_list_df['cleanup_runtime'] = '%0.4f'%(cleanup_runtime)
 
             log_filename = os.path.join(run_parameters["results_directory"], "log_samples_clustering_pipeline.yml")
             sc_test_list_df['message_logfile'].loc[row_n] = log_filename
