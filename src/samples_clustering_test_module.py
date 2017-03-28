@@ -54,7 +54,7 @@ def cleanup_test_SC(run_parameters):
             sc_test_list_df['message_logfile'].loc[row_n] = log_filename
             dc.generate_logging(validation_flag, message, log_filename)
 
-    out_file_name = os.path.join(results_directory_base, run_parameters['pipeline_type'])
+    out_file_name = os.path.join(results_directory_base, run_parameters['pipeline_type'] + '.tsv')
     sc_test_list_df.to_csv(out_file_name, sep='\t', header=True, index=True)
 
 def get_SC_phenotype_viability_df(spreadsheet_data_dir, pheno_data_dir):
