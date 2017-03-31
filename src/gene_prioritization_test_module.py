@@ -20,6 +20,7 @@ import data_cleanup_toolbox as dc
 
 import knpackage.toolbox as kn
 
+
 def cleanup_test_GP(run_parameters):
     """ gp_test_list_df = cleanup_test_GP(run_parameters)
     Args:
@@ -30,17 +31,13 @@ def cleanup_test_GP(run_parameters):
         gp_test_list_df:
     """
     results_directory_base = run_parameters['results_directory']
-    STOPPER_NUMBER = 3
     gp_test_list_df = get_GP_viability_df(
         run_parameters['spreadsheet_data_dir'], run_parameters['pheno_data_dir'])
     gp_test_list_df['STATUS'] = 0
     gp_test_list_df['cleanup_runtime'] = 0
     gp_test_list_df['message_logfile'] = 0
-    count = 0
     for row_n in list(gp_test_list_df.index):
-        count += 1
-        if gp_test_list_df['samples_intersect'].loc[row_n] > 0 and count < STOPPER_NUMBER:
-            print('count = %d'%count)
+        if gp_test_list_df['samples_intersect'].loc[row_n] > 0:
             spreadsheet_name = gp_test_list_df['spreadsheet'].loc[row_n]
             run_parameters['spreadsheet_name_full_path'] = os.path.join(
                 run_parameters['spreadsheet_data_dir'], spreadsheet_name)
@@ -51,7 +48,6 @@ def cleanup_test_GP(run_parameters):
 
             dir_extra = '_' + spreadsheet_name + '_' + phenotype_name
             run_parameters['results_directory'] = kn.create_dir(results_directory_base, dir_extra)
-
             start_cleanup_time = time.time()
             validation_flag, message = dc.run_gene_prioritization_pipeline(run_parameters)
             cleanup_runtime = time.time() - start_cleanup_time
@@ -65,6 +61,7 @@ def cleanup_test_GP(run_parameters):
     out_file_name = os.path.join(results_directory_base, run_parameters['pipeline_type'] + '.tsv')
     gp_test_list_df.to_csv(out_file_name, sep='\t', header=True, index=True)
 
+    
 def get_GP_viability_df(spreadsheet_data_dir, pheno_data_dir):
     """ gp_test_list_df = get_GP_viability_df(spreadsheet_data_dir, pheno_data_dir) """
     gp_test_list_df = get_test_files_list_df(spreadsheet_data_dir, pheno_data_dir)
@@ -77,13 +74,18 @@ def get_GP_viability_df(spreadsheet_data_dir, pheno_data_dir):
 
     spreadsheet_full_file_x = ''
     phenotype_full_file_x = ''
+    
     for row_index in list(gp_test_list_df.index):
+        sample_names = []
         spreadsheet_full_file = os.path.join(spreadsheet_data_dir, gp_test_list_df['spreadsheet'].loc[row_index])
         phenotype_full_file = os.path.join(pheno_data_dir, gp_test_list_df['phenotype'].loc[row_index])
         if spreadsheet_full_file != spreadsheet_full_file_x:
             spreadsheet_full_file_x = spreadsheet_full_file
             spreadsheet_df = pd.read_csv(spreadsheet_full_file, sep='\t', index_col=0, header=0)
-
+            sample_names = list(spreadsheet_df.columns)
+        
+        phenotype_rewrite_transposed = check_set_phenotype_alignment(phenotype_full_file, sample_names)
+        
         if phenotype_full_file != phenotype_full_file_x:
             phenotype_full_file_x = phenotype_full_file
             phenotype_df = pd.read_csv(phenotype_full_file,sep='\t', index_col=0, header=0)
@@ -94,7 +96,7 @@ def get_GP_viability_df(spreadsheet_data_dir, pheno_data_dir):
         gp_test_list_df['phenotype_samples'].loc[row_index] = phenotype_df.shape[1]
         gp_test_list_df['phenotype_keys'].loc[row_index] = phenotype_df.shape[0]
 
-        samples_intersection = list( set(list(spreadsheet_df.columns)) & set(list(phenotype_df.columns)) )
+        samples_intersection = list( set(list(spreadsheet_df.columns)) & set(list(phenotype_df.index)) )
         gp_test_list_df['samples_intersect'].loc[row_index] = max(len(samples_intersection), 0)
 
     return gp_test_list_df
@@ -114,7 +116,7 @@ def get_test_files_list_df(spreadsheet_data_dir, pheno_data_dir):
     spreadsheet_file_list = []
     spreadsheet_file_dir_list = sorted(os.listdir(spreadsheet_data_dir))
     for l in spreadsheet_file_dir_list:
-        if l[0] == '.' or os.path.isdir(os.path.join(spreadsheet_data_dir, l)):
+        if l[0] == '.' or os.path.isdir(os.path.join(spreadsheet_data_dir, l)) or l[-4:] == '.yml':
             pass
         else:
             spreadsheet_file_list.append(l)
@@ -155,6 +157,32 @@ def get_phenotypes_for_spreadsheet(spreadsheet_file_name, phenotype_file_list):
             phenotype_list.append(f)
 
     return sorted(phenotype_list)
+
+
+def check_set_phenotype_alignment(pheno_file_full_name, sample_names):
+    """ phenotype_rewrite_transposed = check_set_phenotype_alignment(pheno_file_full_name, sample_names) """
+    phenotype_rewrite_transposed = False
+    try:
+        pheno_df = pd.read_csv(pheno_file_full_name, sep='\t', index_col=0, header=0)
+        if pheno_df.empty:
+            return phenotype_rewrite_transposed
+        
+        pheno_sample_names = list(pheno_df.columns)
+        pheno_index_names = list(pheno_df.index)
+        
+        if len(list(set(pheno_sample_names) & set(sample_names))) > 0:
+            pheno_df = pheno_df.transpose()
+            pheno_df.to_csv(pheno_file_full_name, sep='\t', index=True, header=True)
+            phenotype_rewrite_transposed = True
+            
+        elif len(list(set(pheno_index_names) & set(sample_names))) > 0:
+            pass
+
+        else:
+            pass
+        
+    except:
+        pass
 
 
 def main():
