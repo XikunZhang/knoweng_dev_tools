@@ -18,4 +18,4 @@ def flip_ss(data_directory, spreadsheet_file):
 
 if __name__ == "__main__":
     data_directory, spreadsheet_file = get_run_directory_and_file(sys.argv)
-    flip_ss_dir(data_directory, spreadsheet_file)
+    flip_ss_dir(data_directory)
