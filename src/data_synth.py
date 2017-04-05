@@ -152,6 +152,17 @@ def get_random_clusters(ncols, number_of_clusters=3):
 
     return H, C
 
+def ensembl_like_names(n_vectors, str_pfx='ONESN', start_v=1, str_len=15, inter_v=3):
+    """ str_list = ensembl_like_names(n_vectors, str_pfx='ONESN', start_v=1, str_len=15, inter_v=3) """
+    pad_size = str_len - len(str_pfx)
+    format_string = '%s%0.'+'%dd'%pad_size
+    out_str_list = list('0'*n_vectors)
+    p = np.random.permutation(n_vectors)
+    for n in range(0, len(out_str_list)):
+        out_str_list[p[n]] = format_string%(str_pfx, start_v + n * inter_v)
+    
+    return out_str_list
+
 def get_rand_unique_name_list(n_names, name_length):
     """ get a list of unique random names with same number of characters (dog-slow if n_names >100k)
     Args:

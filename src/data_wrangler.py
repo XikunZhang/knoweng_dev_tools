@@ -6,6 +6,7 @@ mradmstr514226508@gmail.com
 import time
 import numpy as np
 
+import pandas as pd
 
 def show_dictionary(a_dict):
     """ display a set of run parameters """
@@ -78,3 +79,33 @@ def is_prime(n):
     for k in range(3, int(np.sqrt(n))+2, 2):
         if n % k == 0: return False
     return True
+
+
+def check_set_phenotype_alignment(pheno_file_full_name, sample_names):
+    """ phenotype_rewrite_transposed = check_set_phenotype_alignment(pheno_file_full_name, sample_names) """
+    phenotype_rewrite_transposed = False
+    try:
+        pheno_df = pd.read_csv(pheno_file_full_name, sep='\t', index_col=0, header=0)
+        if pheno_df.empty:
+            return phenotype_rewrite_transposed
+        
+        pheno_sample_names = list(pheno_df.columns)
+        pheno_index_names = list(pheno_df.index)
+        
+        if len(list(set(pheno_sample_names) & set(sample_names))) > 0:
+                        pheno_df = pheno_df.transpose()
+            pheno_df.to_csv(pheno_file_full_name, sep='\t', index=True, header=True)
+            # print('\t\tPhenotype file Transposed and written!')
+            phenotype_rewrite_transposed = True
+        elif len(list(set(pheno_index_names) & set(sample_names))) > 0:
+            # print('\t\tIt Is OK the orientation.')
+            pass
+
+        else:
+            # print('\t\tNo Intersection Found - De Nada!')
+            pass
+        
+    except:
+        pass
+    
+    return phenotype_rewrite_transposed
