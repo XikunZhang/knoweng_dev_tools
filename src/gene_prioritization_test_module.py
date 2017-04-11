@@ -2,7 +2,7 @@
 Usage:
 clone the keg_test_tools and Data_Cleanup_Pipeline to the same directory
 copy and edit (data, results) keg_test_tools/data/run_files/gene_prioritization_cleanup.yml into:
-Data_Cleanup_Pipeline/src/    -- and change to this directory, then run the code
+    Data_Cleanup_Pipeline/src/    -- and change to this directory, then run the code
 
 python3 ../../keg_test_tools/src/gene_prioritization_test_module.py -run_directory ./ -run_file gene_prioritization_cleanup.yml
 
