@@ -8,6 +8,36 @@ import numpy as np
 
 import pandas as pd
 
+def get_directory_dataframe_shapes(data_directory):
+    file_list = os.listdir(data_directory)
+    dir_listing = []
+    for f in file_list:
+        maybe_file = os.path.join(data_directory, f)
+        if os.path.isfile(maybe_file):
+            n_rows, n_cols = get_dataframe_row_col_count(maybe_file)
+            dir_listing.append('%-55s : (%6d, %6d)'%(f,n_rows,n_cols))
+    return dir_listing        
+
+def get_dataframe_row_col_count(full_file_name):
+    """ if column count is zero or one then maybe file is not tab separated 
+    Args:
+        full_file_name:   full path name of file to examine
+    Returns:
+        row_count:        number of newline characters
+        col_count:        number of tab characters in the first line
+    """
+    row_count = 1 # starts increment with second line
+    firstline = ''
+    if os.path.isfile(full_file_name):
+        with open(full_file_name, 'r') as file_handle:
+            firstline = file_handle.readline()
+            for line in file_handle:
+                row_count += 1
+        col_count = len(firstline.split('\t'))
+        return row_count, col_count
+    else:
+        return 0, 0
+
 def show_dictionary(a_dict):
     """ display a set of run parameters """
     for k in sorted(a_dict.keys()):
