@@ -165,7 +165,7 @@ def read_cluster_evaluation_result(results_directory, cluster_eval_filename=None
         cluster_eval_filename = os.path.join(results_directory, cluster_eval_filename)
         cluster_eval_df = pd.read_csv(cluster_eval_filename, sep='\t', header=0, index_col=0)
         
-        return cluster_eval_df
+        return cluster_eval_df, cluster_eval_filename
     
     results_dir_list = sorted(os.listdir(results_directory), reverse=True)
     cluster_evaluation_prefix = 'clustering_evaluation_result'
@@ -174,9 +174,9 @@ def read_cluster_evaluation_result(results_directory, cluster_eval_filename=None
             cluster_eval_filename = os.path.join(results_directory, l)
             cluster_eval_df = pd.read_csv(cluster_eval_filename, sep='\t', header=0, index_col=0)
             
-            return cluster_eval_df
+            return cluster_eval_df, l
     
-    return None
+    return None, ''
     
     
 def read_consensus_result(results_directory, consensus_matrix_file=None):
@@ -184,7 +184,7 @@ def read_consensus_result(results_directory, consensus_matrix_file=None):
         consensus_matrix_file = os.path.join(results_directory, consensus_matrix_file)
         consensus_df = pd.read_csv(consensus_matrix_file, sep='\t', header=0, index_col=0)
         consensus_matrix = consensus_df.as_matrix()
-        return consensus_matrix
+        return consensus_matrix, consensus_matrix_file
     
     results_dir_list = sorted(os.listdir(results_directory), reverse=True)
     cc_prefix = 'consensus_matrix'
@@ -194,9 +194,9 @@ def read_consensus_result(results_directory, consensus_matrix_file=None):
             consensus_matrix_file = os.path.join(results_directory, l)
             consensus_df = pd.read_csv(consensus_matrix_file, sep='\t', header=0, index_col=0)
             consensus_matrix = consensus_df.as_matrix()
-            return consensus_matrix
+            return consensus_matrix, l
     
-    return 0
+    return 0, ''
     
     
 def form_consensus_matrix_graphic(consensus_matrix, k=3):
