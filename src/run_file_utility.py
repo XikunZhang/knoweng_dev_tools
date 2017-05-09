@@ -3,8 +3,10 @@ run_file_utility.py
 lanier4@illinois.edu
 """
 import os
+import numpy as np
 import pandas as pd
 import yaml
+import knpackage.toolbox as kn
 
 
 Data_Cleanup_methods_dictionary =               {
@@ -25,10 +27,56 @@ Samples_Clustering_methods_dictionary = {
     'run_cc_net_nmf_parallel_shared'    : 'BENCHMARK_7_SC_cc_net_nmf_parallel_shared.yml' }
 
 
+def get_run_file_key_data(yaml_file_full_path, key_name):
+    """ get the data for key name in run_file - yaml file 
+    Usage:     key_value, STATUS = get_run_file_key_data(yaml_file_full_path, key_name)
+    """
+    if os.path.isfile(yaml_file_full_path):
+        with open(yaml_file_full_path, 'r') as infile:
+            run_parameters = yaml.load(infile)
+        if key_name in run_parameters:
+            return run_parameters[key_name], True
+        else:
+            return 'key not found', False
+
+
+        
+def check_cleaning_log(run_file_name):
+    """ check data cleanup logfile """
+    results_directory, status_null = get_run_file_key_data(run_file_name, 'results_directory')
+    if os.path.isdir(results_directory):
+        results_dir_list = sorted(os.listdir(results_directory), reverse=True)
+        log_prefix = 'log_'
+    for l in results_dir_list:
+        if l[0:len(log_prefix)] == log_prefix:
+            log_file_name = os.path.join(results_directory, l)
+            log_dict = get_run_file_dictionary(log_file_name)
+            log_dict_keys = log_dict.keys()
+            if 'SUCCESS' in log_dict_keys:
+                return True, log_dict
+            else:
+                return False, log_dict
+            
+    return False, {}
+        
+
+def display_log_dict(log_dict):
+    key_list = log_dict.keys()
+    for k in key_list:
+        print(k,'\n')
+        msg_list = log_dict[k]
+        for msg_item in msg_list:
+                    print(msg_item)
+    
 def update_run_file_post_clean(active_run_file_name):
     """ Update run file after data cleaning """
-    STATUS = False
+
     if os.path.isfile(active_run_file_name):
+        Cleanup_Success, log_dict = check_cleaning_log(active_run_file_name)
+        if not Cleanup_Success:
+            display_log_dict(log_dict)
+            return False
+            
         with open(active_run_file_name, 'r') as infile:
             run_parameters = yaml.load(infile)
             
@@ -39,9 +87,9 @@ def update_run_file_post_clean(active_run_file_name):
         
         with open(active_run_file_name, 'w') as outfile:
             yaml.dump(run_parameters, outfile, default_flow_style=False)
-            STATUS = True
+            return True
             
-    return STATUS
+    return False
 
 
 def set_run_file_path_to_abs(run_file_name, run_dir):
@@ -76,3 +124,94 @@ def set_run_file_path_to_abs(run_file_name, run_dir):
             yaml.dump(run_parameters, outfile, default_flow_style=False)
 
         return out_file_name
+
+
+def get_run_file_dictionary(full_path_file_name):
+    """ get a python dictionary from a yaml file """
+    run_parameters = {}
+    if os.path.isfile(full_path_file_name):
+        with open(full_path_file_name, 'r') as file_handle:
+            run_parameters = yaml.load(file_handle)
+            
+    return run_parameters
+    
+def display_run_file(full_path_file_name):
+    """ display the contents of a yaml file """
+    run_parameters = get_run_file_dictionary(full_path_file_name)
+
+    if len(run_parameters) > 0:
+        view_dictionary(run_parameters)
+
+def view_dictionary(run_parameters):
+    """ display the contents of a python dictionary """
+    for k in sorted(run_parameters.keys()):
+        print('%-40s: %s'%(k,run_parameters[k]))
+
+def show_yaml_file(directory_path, file_name):
+    """  """
+    display_run_file(os.path.join(directory_path, file_name))
+    
+    
+def show_result_directory(results_directory):
+    if os.path.isdir(results_directory):
+        print(results_directory,'\n')
+        dir_list = os.listdir(results_directory)
+        if len(dir_list) > 0:
+            for f_name in sorted(dir_list):
+                print(f_name)
+
+def read_cluster_evaluation_result(results_directory, cluster_eval_filename=None):
+    if cluster_eval_filename is not None and os.path.isfile(os.path.join(results_directory, cluster_eval_filename)):
+        cluster_eval_filename = os.path.join(results_directory, cluster_eval_filename)
+        cluster_eval_df = pd.read_csv(cluster_eval_filename, sep='\t', header=0, index_col=0)
+        
+        return cluster_eval_df
+    
+    results_dir_list = sorted(os.listdir(results_directory), reverse=True)
+    cluster_evaluation_prefix = 'clustering_evaluation_result'
+    for l in results_dir_list:
+        if l[0:len(cluster_evaluation_prefix)] == cluster_evaluation_prefix:
+            cluster_eval_filename = os.path.join(results_directory, l)
+            cluster_eval_df = pd.read_csv(cluster_eval_filename, sep='\t', header=0, index_col=0)
+            
+            return cluster_eval_df
+    
+    return None
+    
+    
+def read_consensus_result(results_directory, consensus_matrix_file=None):
+    if consensus_matrix_file is not None and os.path.isfile(os.path.join(results_directory, consensus_matrix_file)):
+        consensus_matrix_file = os.path.join(results_directory, consensus_matrix_file)
+        consensus_df = pd.read_csv(consensus_matrix_file, sep='\t', header=0, index_col=0)
+        consensus_matrix = consensus_df.as_matrix()
+        return consensus_matrix
+    
+    results_dir_list = sorted(os.listdir(results_directory), reverse=True)
+    cc_prefix = 'consensus_matrix'
+    consensus_matrix = None
+    for l in results_dir_list:
+        if l[0:len(cc_prefix)] == cc_prefix:
+            consensus_matrix_file = os.path.join(results_directory, l)
+            consensus_df = pd.read_csv(consensus_matrix_file, sep='\t', header=0, index_col=0)
+            consensus_matrix = consensus_df.as_matrix()
+            return consensus_matrix
+    
+    return 0
+    
+    
+def form_consensus_matrix_graphic(consensus_matrix, k=3):
+    """ use K-means to reorder the consensus matrix for graphic display.
+
+    Args:
+        consensus_matrix: calculated consensus matrix in samples x samples order.
+        k: number of clusters estimate (inner diminsion k of factored h_matrix).
+
+    Returns:
+        cc_cm: consensus_matrix with rows and columns in K-means sort order.
+    """
+    cc_cm = consensus_matrix.copy()
+    labels = kn.perform_kmeans(consensus_matrix, k)
+    sorted_labels = np.argsort(labels)
+    cc_cm = cc_cm[sorted_labels[:, None], sorted_labels]
+
+    return cc_cm
