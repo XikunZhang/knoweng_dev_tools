@@ -2,7 +2,7 @@
 # Data Cleanup Pipeline
 spreadsheet_name_full_path: ../data/spreadsheets/tcga_ucec_somatic_mutation_data.df
 phenotype_name_full_path:   ../data/spreadsheets/UCEC_phenotype.txt
-results_directory:          ../data/spreadsheets/
+results_directory:          ../test/run_dir/results
 correlation_measure:        pearson
 taxonid:                    '9606'                      # taxon id of a given gene name
 source_hint:                ''                          # hint of looking up ensembl name in Redis database
@@ -17,13 +17,13 @@ redis_credential:                                       # knoweng Redis database
 
 method: cc_net_nmf          # Available methods: nmf, cc_nmf, net_nmf, cc_net_nmf
 
-SC_spreadsheet_name_full_path: ../data/spreadsheets/tcga_ucec_somatic_mutation_data_ETL.tsv
-SC_phenotype_name_full_path:   ../data/spreadsheets/UCEC_phenotype_ETL.tsv
+SC_spreadsheet_name_full_path: ../test/run_dir/results/tcga_ucec_somatic_mutation_data_ETL.tsv
+SC_phenotype_name_full_path:   ../test/run_dir/results/UCEC_phenotype_ETL.tsv
 threshold: 10
 
 gg_network_name_full_path:  ../data/networks/keg_ST90_4col.edge
 
-SC_results_directory:           ../test/run_dir/results
+SC_results_directory:        ../test/run_dir/results
 tmp_directory:               ../test/run_dir
 
 rwr_max_iterations:         100
