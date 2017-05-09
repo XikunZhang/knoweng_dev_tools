@@ -111,6 +111,29 @@ def get_results_directory(yaml_file_full_path):
         else:
             return 'key not found'
 
+        
+def get_number_of_clusters(yaml_file_full_path):
+    if os.path.isfile(yaml_file_full_path):
+        with open(yaml_file_full_path, 'r') as infile:
+            run_parameters = yaml.load(infile)
+        if 'number_of_clusters' in run_parameters:
+            return run_parameters['number_of_clusters']
+        else:
+            return 'key not found'
+        
+def get_run_file_key_data(yaml_file_full_path, key_name):
+    """ get the data for key name in run_file - yaml file 
+    Usage: key_value, STATUS = get_run_file_key_data(yaml_file_full_path, key_name)
+    """
+    if os.path.isfile(yaml_file_full_path):
+        with open(yaml_file_full_path, 'r') as infile:
+            run_parameters = yaml.load(infile)
+        if key_name in run_parameters:
+            return run_parameters[key_name], True
+        else:
+            return 'key not found', False
+
+        
 
 def view_dictionary(run_parameters):
     for k in sorted(run_parameters.keys()):
