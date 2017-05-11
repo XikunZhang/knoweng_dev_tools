@@ -3,6 +3,7 @@ run_file_utility.py
 lanier4@illinois.edu
 """
 import os
+import time
 import numpy as np
 import pandas as pd
 import yaml
@@ -215,3 +216,74 @@ def form_consensus_matrix_graphic(consensus_matrix, k=3):
     cc_cm = cc_cm[sorted_labels[:, None], sorted_labels]
 
     return cc_cm
+
+def run_data_cleanup(run_dir, run_file):
+    """ run the data cleanup pipeline """
+    data_cleanup_start_time = time.time()
+    DC_call_string = 'python3 ../../Data_Cleanup_Pipeline/src/data_cleanup.py -run_directory' + ' ' + run_dir
+    DC_call_string = DC_call_string + ' -run_file' + ' ' + run_file
+    os.system(DC_call_string)
+    run_file_name = os.path.join(run_dir, run_file)
+    SUCCESS, log_dict = check_cleaning_log(run_file_name)
+    return SUCCESS, log_dict, time.time() - data_cleanup_start_time
+
+
+def run_samples_clustering(run_dir, run_file, SC_src_directory='../../Samples_Clustering_Pipeline/src'):
+    """ run the samples clustering pipeline """
+    SC_src_directory = os.path.join(os.path.abspath(SC_src_directory), 'samples_clustering.py')
+    SC_call_string = 'python3' + ' ' + SC_src_directory + ' ' + '-run_directory' + ' ' + run_dir
+    SC_call_string = SC_call_string + ' -run_file' + ' ' + run_file
+
+    samples_clustering_start_time = time.time()
+    os.system(SC_call_string)
+
+    return time.time() - samples_clustering_start_time
+
+def git_clone_Samples_Clustering(pipelines_directory):
+    """  clone samples clustering and data cleaning if they are not installed relative to the calling notebook """
+    working_directory = os.getcwd()
+    os.chdir(pipelines_directory)
+
+    DC_name = 'Data_Cleanup_Pipeline'
+    Data_Cleanup_Exists = False
+    SC_name = 'Samples_Clustering_Pipeline'
+    Samples_Clustering_Exists = False
+
+    dir_listing = os.listdir()
+    for d in dir_listing:
+        if os.path.isdir(d):
+            if d == DC_name:
+                Data_Cleanup_Exists = True
+            elif d == SC_name:
+                Samples_Clustering_Exists = True
+
+    if Data_Cleanup_Exists == False:
+        dc_git_string = 'git clone https://github.com/KnowEnG-Research/Data_Cleanup_Pipeline.git'
+        os.system(dc_git_string)
+
+    if Samples_Clustering_Exists == False:
+        sc_git_string = 'git clone https://github.com/KnowEnG-Research/Samples_Clustering_Pipeline.git'
+        os.system(sc_git_string)
+
+    os.chdir(working_directory)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
