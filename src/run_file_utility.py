@@ -3,12 +3,17 @@ run_file_utility.py
 lanier4@illinois.edu
 """
 import os
+import sys
 import time
 import numpy as np
 import pandas as pd
 import yaml
 import knpackage.toolbox as kn
 
+from IPython.display import display
+sys.path.insert(1, '../src')
+import KnowEnG_graphics as gu
+# import run_file_utility as rfu
 
 Data_Cleanup_methods_dictionary =               {
     'run_data_cleaning'                         : 'data_cleanup.yml',
@@ -48,16 +53,16 @@ def check_cleaning_log(run_file_name):
     if os.path.isdir(results_directory):
         results_dir_list = sorted(os.listdir(results_directory), reverse=True)
         log_prefix = 'log_'
-    for l in results_dir_list:
-        if l[0:len(log_prefix)] == log_prefix:
-            log_file_name = os.path.join(results_directory, l)
-            log_dict = get_run_file_dictionary(log_file_name)
-            log_dict_keys = log_dict.keys()
-            if 'SUCCESS' in log_dict_keys:
-                return True, log_dict
-            else:
-                return False, log_dict
-            
+        for l in results_dir_list:
+            if l[0:len(log_prefix)] == log_prefix:
+                log_file_name = os.path.join(results_directory, l)
+                log_dict = get_run_file_dictionary(log_file_name)
+                log_dict_keys = log_dict.keys()
+                if 'SUCCESS' in log_dict_keys:
+                    return True, log_dict
+                else:
+                    return False, log_dict
+
     return False, {}
         
 
@@ -161,6 +166,7 @@ def show_result_directory(results_directory):
             for f_name in sorted(dir_list):
                 print(f_name)
 
+
 def read_cluster_evaluation_result(results_directory, cluster_eval_filename=None):
     if cluster_eval_filename is not None and os.path.isfile(os.path.join(results_directory, cluster_eval_filename)):
         cluster_eval_filename = os.path.join(results_directory, cluster_eval_filename)
@@ -217,6 +223,7 @@ def form_consensus_matrix_graphic(consensus_matrix, k=3):
 
     return cc_cm
 
+
 def run_data_cleanup(run_dir, run_file):
     """ run the data cleanup pipeline """
     data_cleanup_start_time = time.time()
@@ -238,6 +245,19 @@ def run_samples_clustering(run_dir, run_file, SC_src_directory='../../Samples_Cl
     os.system(SC_call_string)
 
     return time.time() - samples_clustering_start_time
+
+
+def display_samples_clustering_results(run_file_name):
+    results_directory, status_null = get_run_file_key_data(run_file_name, 'results_directory')
+    consensus_matrix, cc_file_name = read_consensus_result(results_directory)
+    number_of_clusters, status_null = get_run_file_key_data(run_file_name, 'number_of_clusters')
+    I0 = form_consensus_matrix_graphic(consensus_matrix, number_of_clusters)
+    display(gu.mat_to_blue(I0))
+
+    cluster_eval_df, ce_file_name   = read_cluster_evaluation_result(results_directory)
+    if cluster_eval_df is not None:
+        display(cluster_eval_df)
+
 
 def git_clone_Samples_Clustering(pipelines_directory):
     """  clone samples clustering and data cleaning if they are not installed relative to the calling notebook """
