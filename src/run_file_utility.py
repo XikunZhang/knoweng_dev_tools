@@ -11,9 +11,9 @@ import yaml
 import knpackage.toolbox as kn
 
 from IPython.display import display
+
 sys.path.insert(1, '../src')
 import KnowEnG_graphics as gu
-# import run_file_utility as rfu
 
 Data_Cleanup_methods_dictionary =               {
     'run_data_cleaning'                         : 'data_cleanup.yml',
@@ -24,14 +24,27 @@ Data_Cleanup_methods_dictionary =               {
     'run_gene_prioritization_pipeline_t_test'   : 'TEST_1_gene_prioritization_pipeline_t_test.yml',
     'run_geneset_characterization_pipeline'     : 'TEST_1_geneset_characterization_pipeline.yml' }
 
-Samples_Clustering_methods_dictionary = {
-    'run_nmf'                           : 'BENCHMARK_1_SC_nmf.yml',
-    'run_net_nmf'                       : 'BENCHMARK_2_SC_net_nmf.yml',
-    'run_cc_nmf_serial'                 : 'BENCHMARK_3_SC_cc_nmf_serial.yml',
-    'run_cc_nmf_parallel_shared'        : 'BENCHMARK_4_SC_cc_nmf_parallel_shared.yml',
-    'run_cc_net_nmf_serial'             : 'BENCHMARK_6_SC_cc_net_nmf_serial.yml',
-    'run_cc_net_nmf_parallel_shared'    : 'BENCHMARK_7_SC_cc_net_nmf_parallel_shared.yml' }
+Samples_Clustering_methods_dictionary =         {
+    'run_nmf'                                   : 'BENCHMARK_1_SC_nmf.yml',
+    'run_net_nmf'                               : 'BENCHMARK_2_SC_net_nmf.yml',
+    'run_cc_nmf_serial'                         : 'BENCHMARK_3_SC_cc_nmf_serial.yml',
+    'run_cc_nmf_parallel_shared'                : 'BENCHMARK_4_SC_cc_nmf_parallel_shared.yml',
+    'run_cc_net_nmf_serial'                     : 'BENCHMARK_6_SC_cc_net_nmf_serial.yml',
+    'run_cc_net_nmf_parallel_shared'            : 'BENCHMARK_7_SC_cc_net_nmf_parallel_shared.yml' }
 
+Gene_Prioritization_methods_dictionary =    {
+    'run_pearson'                           : 'BENCHMARK_1_GP_pearson',
+    'run_net_pearson'                       : 'BENCHMARK_3_GP_net_pearson',
+    'run_bootstrap_pearson'                 : 'BENCHMARK_2_GP_bootstrap_pearson',
+    'run_bootstrap_net_pearson'             : 'BENCHMARK_4_GP_bootstrap_net_pearson',
+    'run_t_test'                            : 'BENCHMARK_5_GP_t_test',
+    'run_net_t_test'                        : 'BENCHMARK_7_GP_net_t_test',
+    'run_bootstrap_t_test'                  : 'BENCHMARK_6_GP_bootstrap_t_test',
+    'run_bootstrap_net_t_test'              : 'BENCHMARK_8_GP_bootstrap_net_t_test',
+    'run_single_drug_pearson'               : 'TEST_1_GP_single_drug_pearson',
+    'run_multidrug_pearson'                 : 'TEST_2_GP_many_drugs_pearson',
+    'run_single_drug_t_test'                : 'TEST_3_GP_single_drug_t_test',
+    'run_multidrug_t_test'                  : 'TEST_4_GP_many_drugs_t_test'}
 
 def get_run_file_key_data(yaml_file_full_path, key_name):
     """ get the data for key name in run_file - yaml file 
@@ -46,7 +59,6 @@ def get_run_file_key_data(yaml_file_full_path, key_name):
             return 'key not found', False
 
 
-        
 def check_cleaning_log(run_file_name):
     """ check data cleanup logfile """
     results_directory, status_null = get_run_file_key_data(run_file_name, 'results_directory')
@@ -257,6 +269,7 @@ def display_samples_clustering_results(run_file_name):
     cluster_eval_df, ce_file_name   = read_cluster_evaluation_result(results_directory)
     if cluster_eval_df is not None:
         display(cluster_eval_df)
+    return results_directory
 
 
 def git_clone_Samples_Clustering(pipelines_directory):
@@ -287,6 +300,22 @@ def git_clone_Samples_Clustering(pipelines_directory):
 
     os.chdir(working_directory)
 
+def setup_run_dir_run_file(parameters_run_file, run_dir='../test/run_dir', REMOVE_RESULTS=False):
+    """ setup directory and insert run file for running a pipeline """
+    if os.path.isdir('../test') == False:
+        os.mkdir('../test')
+
+    if os.path.isdir('../test/run_dir') == False:
+        os.mkdir('../test/run_dir')
+
+    if os.path.isdir('../test/run_dir/results') == True and REMOVE_RESULTS == True:
+        os.system('rm ../test/run_dir/results/*')
+    elif os.path.isdir('../test/run_dir/results') == False:
+        os.mkdir('../test/run_dir/results')
+
+    run_file_name = set_run_file_path_to_abs(parameters_run_file, run_dir)
+
+    return run_file_name
 
 
 
