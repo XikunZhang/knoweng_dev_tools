@@ -259,6 +259,17 @@ def run_samples_clustering(run_dir, run_file, SC_src_directory='../../Samples_Cl
     return time.time() - samples_clustering_start_time
 
 
+def get_cluster_size_numbers(full_filename):
+    """ get the number of samples for each cluster number """
+    clusters_df = pd.read_csv(full_filename, sep='\t', header=None, index_col=0)
+    cluster_dict = {}
+    for k in range(0, clusters_df[1].max()+1):
+        cluster_dict['%d'%k] = (clusters_df[1] == k).sum()
+        
+    return cluster_dict
+
+
+
 def display_samples_clustering_results(run_file_name):
     results_directory, status_null = get_run_file_key_data(run_file_name, 'results_directory')
     consensus_matrix, cc_file_name = read_consensus_result(results_directory)
@@ -291,11 +302,11 @@ def git_clone_Samples_Clustering(pipelines_directory):
                 Samples_Clustering_Exists = True
 
     if Data_Cleanup_Exists == False:
-        dc_git_string = 'git clone https://github.com/KnowEnG-Research/Data_Cleanup_Pipeline.git'
+        dc_git_string = 'git clone https://github.com/KnowEnG/Data_Cleanup_Pipeline.git'
         os.system(dc_git_string)
 
     if Samples_Clustering_Exists == False:
-        sc_git_string = 'git clone https://github.com/KnowEnG-Research/Samples_Clustering_Pipeline.git'
+        sc_git_string = 'git clone https://github.com/KnowEnG/Samples_Clustering_Pipeline.git'
         os.system(sc_git_string)
 
     os.chdir(working_directory)
