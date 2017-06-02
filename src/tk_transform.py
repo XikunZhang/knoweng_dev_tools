@@ -1,38 +1,26 @@
-from tkinter import Listbox, Scrollbar, Button, Tk, Frame, Label, constants, filedialog, END
-import os, sys
-
-def file_save(text):
-    f = filedialog.asksaveasfile(mode='w', defaultextension=".txt")
-    if f is None: 
-        return
-    f.write(text)
-    f.close()
-    return
-
-def transform(text):
-    # transform functions HERE
-    print("transform")
-    output = text
-    
-    Button(text="Save as", command = lambda: file_save(output), font=("Helvetica", 21)).pack()
-
+from tkinter import Button, Tk, Frame, filedialog
+import os
+import pandas
 
 def file_upload(root):
-    file = filedialog.askopenfilename(filetypes = (("CSV files","*.csv"),("TXT files", "*.txt")))
-    
-    directory = os.path.abspath(file)
 
-    file_handler = open(directory)
-    content = file_handler.read()
+    file = filedialog.askopenfilename(filetypes = (("TSV files","*.tsv"),("CSV files","*.csv"),("TXT files", "*.txt")))
+    input_full_file_name = os.path.abspath(file)
+    try:
+        spreadsheet_df = pandas.read_csv(input_full_file_name, sep='\t', index_col=0, header=0)
+        spreadsheet_df = spreadsheet_df.transpose()
+        output_full_file_name = filedialog.asksaveasfile(mode='w', defaultextension=".tsv")
+        spreadsheet_df.to_csv(output_full_file_name, sep='\t', index=True, header=True)
+    except:
+        pass
 
-    Button(text="Transform", command = lambda: transform(content), font=("Helvetica", 21)).pack()
-
-    return content
+    root.destroy()
 
 def init_frame(root):
     frame = Frame(root)
     frame.pack()
-    Button(text="Upload", command = lambda: file_upload(root), font=("Helvetica", 21)).pack()
+    Button(text="Select File", command = lambda: file_upload(root), font=("Helvetica", 21)).pack()
+    Button(text="Cancel", command=root.destroy).pack()
 
 def main():
     root = Tk()
