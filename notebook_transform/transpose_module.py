@@ -27,7 +27,7 @@ class Transpose_Notebook_GUI():
         
     def populate_GUI(self):
         self.input_file_button = widgets.Button(
-            description='Input File',
+            description='Select Input File',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='input file to transpose',
@@ -49,7 +49,7 @@ class Transpose_Notebook_GUI():
             )
         
         self.output_file_button = widgets.Button(
-            description='Transpose',
+            description='Transpose Save As',
             disabled=False,
             button_style='', # 'success', 'info', 'warning', 'danger' or ''
             tooltip='file to transpose',
