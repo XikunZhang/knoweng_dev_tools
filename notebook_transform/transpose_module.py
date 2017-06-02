@@ -99,7 +99,9 @@ class Transpose_Notebook_GUI():
                                               ("All files", "*.*")))
         file_name = os.path.abspath(ret_name)
         
-        if not os.path.isfile(file_name): return     #   exit if no file selected
+        if not os.path.isfile(file_name):
+            print('No File')
+            return     #   exit if no file selected
         
         self.data[call_button.data_file_key] = file_name
         self.input_file_name_display.value = os.path.split(file_name)[1]
