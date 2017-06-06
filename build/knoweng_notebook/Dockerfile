@@ -29,15 +29,14 @@ RUN git clone https://github.com/KnowEnG-Research/Samples_Clustering_Pipeline.gi
 # install development tools
 RUN git clone https://github.com/dlanier/knoweng_dev_tools.git ${DEV_SRC_LOC}
 
-
 EXPOSE 8888
 WORKDIR ${BASE_LOC}
 USER $NB_USER
 
 RUN /usr/local/bin/jupyter notebook --generate-config
 
-# ENTRYPOINT /usr/local/bin/jupyter
-CMD "/usr/local/bin/jupyter" "notebook"
+ENTRYPOINT jupyter
+CMD "notebook"
 
 # docker run -v `pwd`:/home/KnowEnG-Research -it --rm -p 8888:8888 local_user_notebook
 # WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
