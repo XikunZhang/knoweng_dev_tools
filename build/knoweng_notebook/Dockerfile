@@ -12,8 +12,6 @@ ENV NB_UID 1000
 ENV BASE_LOC /home/$NB_USER
 
 # Create local_user user with UID=1000 and in the 'users' group
-# RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && mkdir -p $JUP_DIR && chown $NB_USER $JUP_DIR
-# RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && chown $NB_USER $JUP_DIR && chown $NB_USER $BASE_LOC
 RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && chown $NB_USER $BASE_LOC
 
 ENV DC_SRC_LOC $BASE_LOC/Data_Cleanup_Pipeline
@@ -35,9 +33,9 @@ USER $NB_USER
 
 RUN /usr/local/bin/jupyter notebook --generate-config
 
-ENTRYPOINT jupyter
-CMD "notebook"
+# ENTRYPOINT jupyter
+# CMD "notebook --no-browser --config-dir .jupyter" 
 
-# docker run -v `pwd`:/home/KnowEnG-Research -it --rm -p 8888:8888 local_user_notebook
+# docker run -v `pwd`:/home/local_user/test -it --rm -p 8888:8888 local_user_notebook
 # WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
 # docker exec -it xxxxxxxxxxxxx bash
