@@ -25,6 +25,14 @@ RUN git clone https://github.com/KnowEnG/Data_Cleanup_Pipeline.git ${DC_SRC_LOC}
 # install Samples_Clustering_Pipeline
 RUN git clone https://github.com/KnowEnG-Research/Samples_Clustering_Pipeline.git ${SC_SRC_LOC}
 
+# install Gene_Prioritization_Pipeline
+
+# install GeneSet_Characterization_Pipeline
+
+# install Phenotype_Prediction_Pipeline
+
+# Install Net_SVD_Pipeline
+
 # install notebook development tools
 RUN git clone https://github.com/dlanier/knoweng_dev_tools.git ${DEV_SRC_LOC}
 

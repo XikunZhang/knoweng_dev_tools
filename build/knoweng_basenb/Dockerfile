@@ -1,4 +1,5 @@
 # docker build -t knoweng_basenb .
+# 
 FROM jupyter/base-notebook
 MAINTAINER Dan Lanier <lanier4@illinois.edu>
 
