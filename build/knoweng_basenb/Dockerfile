@@ -1,5 +1,3 @@
-# docker build -t knoweng_basenb .
-# 
 FROM jupyter/base-notebook
 MAINTAINER Dan Lanier <lanier4@illinois.edu>
 
@@ -15,5 +13,9 @@ RUN apt-get update && apt-get install python3-dev python3-setuptools
 
 RUN conda install Pillow
 RUN conda install IPython
+RUN conda install ipywidgets
 
 USER $NB_USER
+
+# docker build -t knoweng_basenb .
+# jupyter/base-notebook  from  https://github.com/jupyter/docker-stacks
