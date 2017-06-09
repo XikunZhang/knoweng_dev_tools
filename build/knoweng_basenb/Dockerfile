@@ -17,5 +17,5 @@ RUN conda install ipywidgets
 
 USER $NB_USER
 
-# docker build -t knoweng_basenb .
-# jupyter/base-notebook  from  https://github.com/jupyter/docker-stacks
+# docker build -t knowengdev/jupyter_notebooks:base_image .
+# (jupyter/base-notebook in )  https://github.com/jupyter/docker-stacks
