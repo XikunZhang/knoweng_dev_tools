@@ -1,12 +1,12 @@
-FROM knowengdev/jupyter_base:06_09_2017
+FROM knowengdev/jupyter_notebooks:base_image
 MAINTAINER Dan Lanier <lanier4@illinois.edu>
 
 USER root
 ENV BASE_LOC /home/jovyan/pipelines
 RUN mkdir $BASE_LOC
 RUN chown $NB_USER $BASE_LOC
-RUN mkdir /home/jovyan/.cache
-RUN chown $NB_USER /home/jovyan/.cache
+# RUN mkdir /home/jovyan/.cache
+# RUN chown $NB_USER /home/jovyan/.cache
 
 RUN pip install --upgrade pip
 RUN conda install Pillow
@@ -43,6 +43,7 @@ RUN git clone https://github.com/dlanier/knoweng_dev_tools.git ${DEV_SRC_LOC}
 # Install Net_SVD_Pipeline
 # RUN git clone https://github.com/KnowEnG-Research/Net_SVD_Pipeline.git ${N_SVD_SRC_LOC}
 
+COPY Makefile $BASE_LOC
 USER $NB_USER
 
 # docker build -t knoweng_pipelines .
