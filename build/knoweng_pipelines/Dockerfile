@@ -1,6 +1,4 @@
-# docker build -t knoweng_pipelines .
-# rooted: https://github.com/jupyter/docker-stacks (base-notebook)
-FROM knoweng_basnb
+FROM knowengdev/jupyter_base:06_09_2017
 MAINTAINER Dan Lanier <lanier4@illinois.edu>
 
 USER root
@@ -37,18 +35,15 @@ RUN git clone https://github.com/KnowEnG-Research/Gene_Prioritization_Pipeline.g
 # install GeneSet_Characterization_Pipeline
 RUN git clone https://github.com/KnowEnG-Research/GeneSet_Characterization_Pipeline.git ${GSC_SRC_LOC}
 
-# install Phenotype_Prediction_Pipeline
-# RUN git clone https://github.com/KnowEnG-Research/Phenotype_Prediction_Pipeline.git ${PP_SRC_LOC}
-
-# Install Net_SVD_Pipeline
-# RUN git clone https://github.com/KnowEnG-Research/Net_SVD_Pipeline.git ${N_SVD_SRC_LOC}
-
 # install notebook development tools
 RUN git clone https://github.com/dlanier/knoweng_dev_tools.git ${DEV_SRC_LOC}
 
-RUN chown $NB_USER /home/jovyan/.cache/
+# install Phenotype_Prediction_Pipeline
+# RUN git clone https://github.com/KnowEnG-Research/Phenotype_Prediction_Pipeline.git ${PP_SRC_LOC}
+# Install Net_SVD_Pipeline
+# RUN git clone https://github.com/KnowEnG-Research/Net_SVD_Pipeline.git ${N_SVD_SRC_LOC}
 
 USER $NB_USER
 
-
-# https://github.com/KnowEnG/Net_SVD_Pipeline.git
+# docker build -t knoweng_pipelines .
+# rooted: https://github.com/jupyter/docker-stacks (base-notebook)
