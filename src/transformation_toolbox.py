@@ -2,8 +2,6 @@
 lanier4@illinois.edu
 (samples x phenotypes) spreadsheet transformations
 """
-
-import os
 import pandas as pd
 import knpackage.toolbox as kn
 
