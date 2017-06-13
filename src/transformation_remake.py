@@ -2,9 +2,6 @@
 lanier4@illinois.edu
 (samples x phenotypes) spreadsheet transformations - "main" function
 """
-import os
-import sys
-import argparse
 
 def transpose(run_parameters):
     from transformation_toolbox import read_transpose_write
