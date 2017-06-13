@@ -1,0 +1,10 @@
+# find common sample names in to spreadsheets, write to output files specified
+method:          get_common_samples
+
+full_file_name_1: ../data/transform_data/spreadsheet_One.txt
+full_file_name_2: ../data/transform_data/spreadsheet_Two.txt
+
+out_file_name_1: ../test/spreadsheet_One_and2.txt
+out_file_name_2: ../test/spreadsheet_Two_and1.txt
+
+test_dir_run_string: 'python3 ../src/transformation_remake.py -run_directory ../data/run_files -run_file TEST_2_common_samples.yml'
