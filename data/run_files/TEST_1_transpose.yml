@@ -2,7 +2,7 @@
 method:              transpose
 
 input_file_name:     ../data/transform_data/spreadsheet_One.txt
-output_file_name:    ../test/spreadsheet_One_T.txt
+output_file_name:    ../test/spreadsheet_One_T.tsv
 
 # change to the knoweng_dev_tools/test directory then cut and paste this line
 test_dir_run_string: 'python3 ../src/transformation_remake.py -run_directory ../data/run_files -run_file TEST_1_transpose.yml'
