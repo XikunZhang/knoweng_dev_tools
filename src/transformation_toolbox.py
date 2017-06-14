@@ -5,6 +5,7 @@ lanier4@illinois.edu
 import pandas as pd
 import knpackage.toolbox as kn
 
+
 # transform_0
 def transpose_df(spreadsheet_df):
     """ Transpose a spreadsheet data frame.
@@ -15,11 +16,13 @@ def transpose_df(spreadsheet_df):
     """
     return spreadsheet_df.transpose()
 
+
 def read_transpose_write(run_parameters):
     """ Read, transpose a spreadsheet data frame, and write it to a new file.
     Args:
-        input_file_name:     valid full path file name
-        output_file_name:   valid full path file name
+        run_parameters:     dict with the following keys:
+            input_file_name:     valid full path file name
+            output_file_name:   valid full path file name
     Returns:
         STATUS:             0 if written successfully
     """
@@ -33,7 +36,6 @@ def read_transpose_write(run_parameters):
     except:
         pass
         return -1
-
 
 
 # transform_1
@@ -52,13 +54,15 @@ def get_common_samples_data_frames(sxp_1_df, sxp_2_df):
 
     return sxp_1_df.loc[common_samples_list], sxp_2_df.loc[common_samples_list]
 
+
 def read_get_common_samples_write(run_parameters):
     """ Two spreadsheets with sample names in common are written with only the common samples in each.
     Args:
-        full_file_name_1:   full path name of first input file
-        full_file_name_2:   full path name of second input file
-        out_file_name_1:    output file name for full_file_name_1
-        out_file_name_2:    output file name for full_file_name_2
+        run_parameters:     dict with the following keys:
+            full_file_name_1:   full path name of first input file
+            full_file_name_2:   full path name of second input file
+            out_file_name_1:    output file name for full_file_name_1
+            out_file_name_2:    output file name for full_file_name_2
     Returns:                
         STATUS = 0 if successful
     """
@@ -88,16 +92,6 @@ def merge_df(spreadsheet_1_df, spreadsheet_2_df):
     Returns:
         spreadsheet_union_df:         samples x phenotypes dataframe with combined samples and phenotypes
     """
-    spreadsheet_1_samples = kn.extract_spreadsheet_gene_names(spreadsheet_1_df)
-    spreadsheet_2_samples = kn.extract_spreadsheet_gene_names(spreadsheet_2_df)
-    
-    #all_samples_list = kn.find_unique_node_names(spreadsheet_1_samples, spreadsheet_2_samples)
-    
-    spreadsheet_1_phenotypes = list(spreadsheet_1_df.columns)
-    spreadsheet_2_phenotypes = list(spreadsheet_2_df.columns)
-    
-    #all_phenotypes_list = kn.find_unique_node_names(spreadsheet_1_phenotypes, spreadsheet_2_phenotypes)
-    
     spreadsheet_X_df = pd.concat([spreadsheet_1_df, spreadsheet_2_df], axis=1)
         
     return spreadsheet_X_df
@@ -105,20 +99,21 @@ def merge_df(spreadsheet_1_df, spreadsheet_2_df):
 def read_merge_write(run_parameters):
     """Two spreadsheets are combined into one with all samples and phenotypes. (NaN filled)
     Args:
-        input_path1: full path name of first input file
-        input_path2: full path name of second input file
-        output_path: output file name for input_path1
+        run_parameters:         dict with the following keys:
+            full_file_name_1:   full path name of first input file
+            full_file_name_2:   full path name of second input file
+            out_file_name:      output file name for input_path1
     Returns:
         STATUS = 0 if successful
     """
-    input_path1 = run_parameters['input_path1']
-    input_path2 = run_parameters['input_path2']
-    output_path = run_parameters['output_path']
+    input_path1 = run_parameters['full_file_name_1']
+    input_path2 = run_parameters['full_file_name_2']
+    output_path = run_parameters['out_file_name']
     
     try:
         spreadsheet_1_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         spreadsheet_2_df = pd.read_csv(input_path2, sep='\t', index_col=0, header=0)
-        spreadsheet_X_df = merge(spreadsheet_1_df,spreadsheet_2_df)
+        spreadsheet_X_df = merge_df(spreadsheet_1_df,spreadsheet_2_df)
 
         spreadsheet_X_df.to_csv(output_path, sep='\t', index=True, header=True)
         
@@ -141,11 +136,14 @@ def select_genes(spreadsheet_df, gene_select_list):
     intersection_names = kn.find_common_node_names(gene_names, gene_select_list)
     return spreadsheet_df.loc[intersection_names]
 
+
 def read_select_genes_write(run_parameters):
     """One spreadsheet is returned with only those genes selected from an input list.
     Args:
-        input_path: full path name of input file
-        gene_select_list
+        run_parameters:     dict with the following keys:
+            input_path: full path name of input file
+            gene_select_list:
+            output_path:
     Returns:
         STATUS = 0 if successful        
     """

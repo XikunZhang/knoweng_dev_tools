@@ -11,9 +11,14 @@ def get_common_samples(run_parameters):
     from transformation_toolbox import read_get_common_samples_write
     read_get_common_samples_write(run_parameters)
 
+def merge(run_parameters):
+    from transformation_toolbox import merge_df
+    merge_df(run_parameters)
+
 SELECT = {
             'transpose': transpose,
-            'get_common_samples': get_common_samples}
+            'get_common_samples': get_common_samples,
+            'merge': merge}
 
 def main():
     import sys
