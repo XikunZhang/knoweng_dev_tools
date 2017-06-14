@@ -118,17 +118,7 @@ def read_merge_write(run_parameters):
     try:
         spreadsheet_1_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         spreadsheet_2_df = pd.read_csv(input_path2, sep='\t', index_col=0, header=0)
-        spreadsheet_1_samples = kn.extract_spreadsheet_gene_names(spreadsheet_1_df)
-        spreadsheet_2_samples = kn.extract_spreadsheet_gene_names(spreadsheet_2_df)
-
-        #all_samples_list = kn.find_unique_node_names(spreadsheet_1_samples, spreadsheet_2_samples)
-
-        spreadsheet_1_phenotypes = list(spreadsheet_1_df.columns)
-        spreadsheet_2_phenotypes = list(spreadsheet_2_df.columns)
-
-        #all_phenotypes_list = kn.find_unique_node_names(spreadsheet_1_phenotypes, spreadsheet_2_phenotypes)
-
-        spreadsheet_X_df = pd.concat([spreadsheet_1_df, spreadsheet_2_df], axis=1)
+        spreadsheet_X_df = merge(spreadsheet_1_df,spreadsheet_2_df)
 
         spreadsheet_X_df.to_csv(output_path, sep='\t', index=True, header=True)
         
@@ -136,4 +126,36 @@ def read_merge_write(run_parameters):
     
     except:
         pass
+        return -1
+    
+# transform_3
+def select_genes(spreadsheet_df, gene_select_list):
+    """  
+    Args:
+        spreadsheet_df:             genes x samples data frame
+        gene_select_list:           list of some gene names in the spreadsheet
+    Returns:
+        spreadsheet_intersected_df: data frame with only the genes in the intersection of input gene names.
+    """
+    gene_names = kn.extract_spreadsheet_gene_names(spreadsheet_df)
+    intersection_names = kn.find_common_node_names(gene_names, gene_select_list)
+    return spreadsheet_df.loc[intersection_names]
+
+def read_select_genes_write(run_parameters):
+    """One spreadsheet is returned with only those genes selected from an input list.
+    Args:
+        input_path: full path name of input file
+        gene_select_list
+    Returns:
+        STATUS = 0 if successful        
+    """
+    try:
+        input_path = run_parameters['input_path']
+        gene_select_list = run_parameters['gene_select_list']
+        output_path = run_parameters['output_path']
+        spreadsheet_df = pd.read_csv(input_path, sep='\t', index_col=0, header=0)
+        spreadsheet_intersected_df = select_genes(spreadsheet_df,gene_select_list)
+        spreadsheet_intersected_df.to_csv(output_path, sep='\t', index=True, header=True)
+        return 0
+    except:
         return -1
