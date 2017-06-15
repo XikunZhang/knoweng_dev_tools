@@ -1,0 +1,9 @@
+# transpose a single spreadsheet and write to output file name specified
+method:              merge
+
+full_file_name_1:    ../data/transform_data/spreadsheet_One.txt
+full_file_name_2:    ../data/transform_data/spreadsheet_Two.txt
+out_file_name:       ../test/spreadsheet_T2.txt
+
+# change to the knoweng_dev_tools/test directory then cut and paste this line
+test_dir_run_string: 'python3 ../src/transformation_remake.py -run_directory ../data/run_files -run_file TEST_3_merge.yml'
