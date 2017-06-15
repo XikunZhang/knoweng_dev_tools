@@ -12,8 +12,8 @@ def get_common_samples(run_parameters):
     read_get_common_samples_write(run_parameters)
 
 def merge(run_parameters):
-    from transformation_toolbox import merge_df
-    merge_df(run_parameters)
+    from transformation_toolbox import read_merge_write
+    read_merge_write(run_parameters)
 
 SELECT = {
             'transpose': transpose,
