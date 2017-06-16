@@ -9,8 +9,11 @@ push_base_image:
 	docker push knowengdev/jupyter_notebooks:base_image
 
 build_pipelines_notebook:
-	cd knoweng_pipelines/; docker build -t knowengdev/jupyter_notebooks:$(CUR_DATE) .
-# 4 minutes
+	cd knoweng_pipelines/; docker build --no-cache -t knowengdev/jupyter_notebooks:$(CUR_DATE) .
+# 4 minute
+
+build_pipelines_update:
+	cd knoweng_pipelines_update/; docker build --no-cache -t knowengdev/jupyter_notebooks:$(CUR_DATE) .
 
 login_to_dockerhub:
 	docker login --username=$(username) --email=$(email)
