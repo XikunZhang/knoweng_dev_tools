@@ -4,6 +4,7 @@ lanier4@illinois.edu
 """
 import pandas as pd
 import knpackage.toolbox as kn
+import numpy as np
 
 # utility
 def read_a_list_file(input_file_name):
@@ -153,15 +154,15 @@ def read_select_genes_write(run_parameters):
     """Read, turn one spreadsheet into one with only those genes selected from an input list, and write it to a new file. 
     Args:
         run_parameters:     dict with the following keys:
-            full_file_name1: full path name of first input file(spreadsheet)
-            full_file_name2: full path name of second input file(gene selection list)
+            full_file_name_1: full path name of first input file(spreadsheet)
+            full_file_name_2: full path name of second input file(gene selection list)
             out_file_name:  full path name of output file
     Returns:
         STATUS:                 0 if successful
     """
     try:
-        input_path1 = run_parameters['full_file_name1']
-        gene_select_list = read_a_list_file[run_parameters['full_file_name2']]
+        input_path1 = run_parameters['full_file_name_1']
+        gene_select_list = read_a_list_file[run_parameters['full_file_name_2']]
         output_path = run_parameters['out_file_name']
         spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         spreadsheet_intersected_df = select_genes_df(spreadsheet_df, gene_select_list)
@@ -169,27 +170,40 @@ def read_select_genes_write(run_parameters):
         return 0
     except:
         return -1
+
+def cluster_averages(spreadsheet_df,labels_df):
+    """Return a dataframe of averages for each category given a genes x samples dataframe and a samples classification dictionary
+    Args:
+        spreadsheet_df:   a genes x samples dataframe
+        labels_df:        a samples classification dictionary
+    Returns:
+        cluster_ave_df:   a dataframe of averages for each category
+    """
+    labels_dict = labels_df.to_dict()['cluster_number']
+    cluster_numbers = list(np.unique(list(labels_dict.values())))
+    labels = list(labels_dict.values())
+    # labels == i is a boolean list
+    cluster_ave_df = pd.DataFrame({i: spreadsheet_df.iloc[:, labels == i].mean(axis=1) for i in cluster_numbers})
+    return cluster_ave_df
+    
     
 def read_cluster_averages_write(run_parameters):
     """Read, return a dataframe of averages for each catagory given a genes x samples dataframe and a samples classification dictionary, and write it into a new file. 
     Args:
         run_parameters:          dict with the following keys:
-            full_file_name1:full path name of the first input file
-            full_file_name2:full path name of the second input file
-            out_file_name:  full path name of the output file
+            full_file_name_1:    full path name of the first input file(genes x samples dataframe)
+            full_file_name_2:    full path name of the second input file(samples classification dictionary)
+            out_file_name:       full path name of the output file
     Returns:
         STATUS:                 0 if successful
     """
     try:
-        input_path1 = run_parameters['full_file_name1']
-        input_path2 = run_parameters['full_file_name2']
-        out_file_name = run_parameters['out_file_name']
+        input_path1 = run_parameters['full_file_name_1']
+        input_path2 = run_parameters['full_file_name_2']
+        output_path = run_parameters['out_file_name']
         spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
-        labels_df = pd.read_csv(input_path2, sep='\t', index_col=0, header=0)
-        labels_dict = labels_df.to_dict()[1]
-        cluster_numbers = list(np.unique(list(labels_dict.values())))
-        labels = list(labels_dict.values())
-        cluster_ave_df = pd.DataFrame({i: spreadsheet_df.iloc[:, labels == i].mean(axis=1) for i in cluster_numbers})
+        labels_df = pd.read_csv(input_path2, sep='\t', index_col=0, names=['sample','cluster_number'])
+        cluster_ave_df = cluster_averages(spreadsheet_df,labels_df)
         cluster_ave_df.to_csv(output_path, sep='\t', index=True, header=True)
         return 0
     except:
