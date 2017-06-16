@@ -5,6 +5,12 @@ lanier4@illinois.edu
 import pandas as pd
 import knpackage.toolbox as kn
 
+# utility
+def read_a_list_file(input_file_name):
+    with open(input_file_name, 'r') as fh:
+        str_input = fh.read()
+    return list(str_input.split())
+
 
 # transform_0
 def transpose_df(spreadsheet_df):
@@ -12,7 +18,7 @@ def transpose_df(spreadsheet_df):
     Args:       
         spreadsheet_df: a pandas dataframe
     Returns:    
-        spreadsheet_transpose_df
+        spreadsheet_transpose_df: transposed dataframe
     """
     return spreadsheet_df.transpose()
 
@@ -21,8 +27,8 @@ def read_transpose_write(run_parameters):
     """ Read, transpose a spreadsheet data frame, and write it to a new file.
     Args:
         run_parameters:     dict with the following keys:
-            input_file_name:     valid full path file name
-            output_file_name:   valid full path file name
+            input_file_name:    full path name of the input file
+            output_file_name:   full path name of the output file
     Returns:
         STATUS:             0 if written successfully
     """
@@ -39,8 +45,8 @@ def read_transpose_write(run_parameters):
 
 
 # transform_1
-def get_common_samples_data_frames(sxp_1_df, sxp_2_df):
-    """ Two dataframes with sample names in common are returned with only the common samples in each.
+def get_common_samples_df(sxp_1_df, sxp_2_df):
+    """Turn two dataframes with sample names in common into one with only the common samples in each. 
     Args:
         sxp_1_df:      samples x phenotypes dataframe (sxp_1_df = kn.get_spreadsheet_df(sxp_filename_1))
         sxp_2_df:      samples x phenotypes dataframe
@@ -56,7 +62,7 @@ def get_common_samples_data_frames(sxp_1_df, sxp_2_df):
 
 
 def read_get_common_samples_write(run_parameters):
-    """ Two spreadsheets with sample names in common are written with only the common samples in each.
+    """ Read, turn two dataframes with sample names in common into one with only the common samples in each, and write them into new files.
     Args:
         run_parameters:     dict with the following keys:
             full_file_name_1:   full path name of first input file
@@ -64,7 +70,7 @@ def read_get_common_samples_write(run_parameters):
             out_file_name_1:    output file name for full_file_name_1
             out_file_name_2:    output file name for full_file_name_2
     Returns:                
-        STATUS = 0 if successful
+        STATUS:                 0 if successful
     """
     full_file_name_1 = run_parameters['full_file_name_1']
     full_file_name_2 = run_parameters['full_file_name_2']
@@ -74,7 +80,7 @@ def read_get_common_samples_write(run_parameters):
     try:
         sxp_1_df = kn.get_spreadsheet_df(full_file_name_1)
         sxp_2_df = kn.get_spreadsheet_df(full_file_name_2)
-        cs_df_1, cs_df_2 = get_common_samples_data_frames(sxp_1_df, sxp_2_df)
+        cs_df_1, cs_df_2 = get_common_samples_df(sxp_1_df, sxp_2_df)
         cs_df_1.to_csv(out_file_name_1, sep='\t', index=True, header=True)
         cs_df_2.to_csv(out_file_name_2, sep='\t', index=True, header=True)
         return 0
@@ -85,7 +91,7 @@ def read_get_common_samples_write(run_parameters):
 
 # transform_2
 def merge_df(spreadsheet_1_df, spreadsheet_2_df):
-    """ 
+    """ Combine two spreadsheets into one with all samples and phenotypes. (NaN filled)
     Args:
         spreadsheet_1_df: samples x phenotypes dataframe
         spreadsheet_2_df: samples x phenotypes dataframe
@@ -97,14 +103,14 @@ def merge_df(spreadsheet_1_df, spreadsheet_2_df):
     return spreadsheet_X_df
 
 def read_merge_write(run_parameters):
-    """Two spreadsheets are combined into one with all samples and phenotypes. (NaN filled)
+    """Read, combine two spreadsheets into one with all samples and phenotypes(NaN filled), and write it into a new file. 
     Args:
         run_parameters:         dict with the following keys:
             full_file_name_1:   full path name of first input file
             full_file_name_2:   full path name of second input file
             out_file_name:      output file name for input_path1
     Returns:
-        STATUS = 0 if successful
+        STATUS:                 0 if successful
     """
     input_path1 = run_parameters['full_file_name_1']
     input_path2 = run_parameters['full_file_name_2']
@@ -124,8 +130,8 @@ def read_merge_write(run_parameters):
         return -1
     
 # transform_3
-def select_genes(spreadsheet_df, gene_select_list):
-    """  
+def select_genes_df(spreadsheet_df, gene_select_list):
+    """Turn one spreadsheet into one with only those genes selected from an input list.  
     Args:
         spreadsheet_df:             genes x samples data frame
         gene_select_list:           list of some gene names in the spreadsheet
@@ -138,22 +144,47 @@ def select_genes(spreadsheet_df, gene_select_list):
 
 
 def read_select_genes_write(run_parameters):
-    """One spreadsheet is returned with only those genes selected from an input list.
+    """Read, turn one spreadsheet into one with only those genes selected from an input list, and write it to a new file. 
     Args:
         run_parameters:     dict with the following keys:
-            input_path: full path name of input file
-            gene_select_list:
-            output_path:
+            full_file_name: full path name of input file
+            gene_select_list:list of some gene names in the spreadsheet
+            out_file_name:  full path name of output file
     Returns:
-        STATUS = 0 if successful        
+        STATUS:                 0 if successful
     """
     try:
-        input_path = run_parameters['input_path']
-        gene_select_list = run_parameters['gene_select_list']
-        output_path = run_parameters['output_path']
+        input_path = run_parameters['full_file_name']
+        gene_select_list = read_a_list_file['gene_select_list']
+        output_path = run_parameters['out_file_name']
         spreadsheet_df = pd.read_csv(input_path, sep='\t', index_col=0, header=0)
-        spreadsheet_intersected_df = select_genes(spreadsheet_df,gene_select_list)
+        spreadsheet_intersected_df = select_genes_df(spreadsheet_df, gene_select_list)
         spreadsheet_intersected_df.to_csv(output_path, sep='\t', index=True, header=True)
+        return 0
+    except:
+        return -1
+    
+def read_cluster_averages_write(run_parameters):
+    """Read, return a dataframe of averages for each catagory given a genes x samples dataframe and a samples classification dictionary, and write it into a new file. 
+    Args:
+        run_parameters:          dict with the following keys:
+            full_file_name1:full path name of the first input file
+            full_file_name2:full path name of the second input file
+            out_file_name:  full path name of the output file
+    Returns:
+        STATUS:                 0 if successful
+    """
+    try:
+        input_path1 = run_parameters['full_file_name1']
+        input_path2 = run_parameters['full_file_name2']
+        out_file_name = run_parameters['out_file_name']
+        spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
+        labels_df = pd.read_csv(input_path2, sep='\t', index_col=0, header=0)
+        labels_dict = labels_df.to_dict()[1]
+        cluster_numbers = list(np.unique(list(labels_dict.values())))
+        labels = list(labels_dict.values())
+        cluster_ave_df = pd.DataFrame({i: spreadsheet_df.iloc[:, labels == i].mean(axis=1) for i in cluster_numbers})
+        cluster_ave_df.to_csv(output_path, sep='\t', index=True, header=True)
         return 0
     except:
         return -1
