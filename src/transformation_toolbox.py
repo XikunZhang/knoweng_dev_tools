@@ -5,6 +5,12 @@ lanier4@illinois.edu
 import pandas as pd
 import knpackage.toolbox as kn
 
+# utility
+def read_a_list_file(input_file_name):
+    with open(input_file_name, 'r') as fh:
+        str_input = fh.read()
+    return list(str_input.split())
+
 
 # transform_0
 def transpose_df(spreadsheet_df):
@@ -149,10 +155,10 @@ def read_select_genes_write(run_parameters):
     """
     try:
         input_path = run_parameters['input_path']
-        gene_select_list = run_parameters['gene_select_list']
+        gene_select_list = read_a_list_file(run_parameters['gene_select_list'])
         output_path = run_parameters['output_path']
         spreadsheet_df = pd.read_csv(input_path, sep='\t', index_col=0, header=0)
-        spreadsheet_intersected_df = select_genes(spreadsheet_df,gene_select_list)
+        spreadsheet_intersected_df = select_genes(spreadsheet_df, gene_select_list)
         spreadsheet_intersected_df.to_csv(output_path, sep='\t', index=True, header=True)
         return 0
     except:
