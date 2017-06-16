@@ -5,6 +5,9 @@ LATEST_IMAGE = 'latest'
 build_latest:
 	cd knoweng_pipelines_update/; docker build --no-cache -t knowengdev/jupyter_notebooks:$(LATEST_IMAGE) .
 
+push_latest:
+    docker push knowengdev/jupyter_notebooks:$(LATEST_IMAGE)
+
 build_base_image:
 	cd knoweng_basenb/; docker build --no-cache -t knowengdev/jupyter_notebooks:base_image .
 # 18 minutes
