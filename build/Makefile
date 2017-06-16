@@ -1,5 +1,9 @@
 CUR_DATE=`date +'%m_%d_%Y'`
+LATEST_IMAGE = 'latest'
 # lanier4@illinois.edu      -- build jupyter notebooks images for KnowEnG
+
+build_latest_knoweng_dev:
+	cd knoweng_pipelines_update/; docker build --no-cache -t knowengdev/jupyter_notebooks:$(LATEST_IMAGE) .
 
 build_base_image:
 	cd knoweng_basenb/; docker build --no-cache -t knowengdev/jupyter_notebooks:base_image .
@@ -11,9 +15,6 @@ push_base_image:
 build_pipelines_notebook:
 	cd knoweng_pipelines/; docker build --no-cache -t knowengdev/jupyter_notebooks:$(CUR_DATE) .
 # 4 minute
-
-build_pipelines_update:
-	cd knoweng_pipelines_update/; docker build --no-cache -t knowengdev/jupyter_notebooks:$(CUR_DATE) .
 
 login_to_dockerhub:
 	docker login --username=$(username) --email=$(email)
