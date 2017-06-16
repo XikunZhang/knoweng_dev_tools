@@ -34,5 +34,3 @@ RUN git clone https://github.com/dlanier/knoweng_dev_tools.git ${DEV_SRC_LOC}
 
 USER $NB_USER
 
-# docker build -t knoweng_pipelines .
-# rooted: https://github.com/jupyter/docker-stacks (base-notebook)

@@ -7,6 +7,12 @@ import knpackage.toolbox as kn
 
 # utility
 def read_a_list_file(input_file_name):
+    """
+    Args:
+        input_file_name:     full path name of a file containing a list
+    Returns:
+        a list that is contained in the file
+    """
     with open(input_file_name, 'r') as fh:
         str_input = fh.read()
     return list(str_input.split())
@@ -147,17 +153,17 @@ def read_select_genes_write(run_parameters):
     """Read, turn one spreadsheet into one with only those genes selected from an input list, and write it to a new file. 
     Args:
         run_parameters:     dict with the following keys:
-            full_file_name: full path name of input file
-            gene_select_list:list of some gene names in the spreadsheet
+            full_file_name1: full path name of first input file(spreadsheet)
+            full_file_name2: full path name of second input file(gene selection list)
             out_file_name:  full path name of output file
     Returns:
         STATUS:                 0 if successful
     """
     try:
-        input_path = run_parameters['full_file_name']
-        gene_select_list = read_a_list_file['gene_select_list']
+        input_path1 = run_parameters['full_file_name1']
+        gene_select_list = read_a_list_file[run_parameters['full_file_name2']]
         output_path = run_parameters['out_file_name']
-        spreadsheet_df = pd.read_csv(input_path, sep='\t', index_col=0, header=0)
+        spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         spreadsheet_intersected_df = select_genes_df(spreadsheet_df, gene_select_list)
         spreadsheet_intersected_df.to_csv(output_path, sep='\t', index=True, header=True)
         return 0

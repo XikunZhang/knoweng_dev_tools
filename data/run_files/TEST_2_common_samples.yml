@@ -1,4 +1,4 @@
-# find common sample names in two spreadsheets, write to output files specified
+# find common sample names in two spreadsheets, write to output files names specified
 method:              get_common_samples
 
 full_file_name_1:    ../data/transform_data/spreadsheet_One.txt

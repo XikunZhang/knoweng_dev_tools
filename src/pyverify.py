@@ -5,6 +5,25 @@ import os
 import pandas as pd
 import yaml
 
+def write_a_list(input_list, write_file_name, write_directory=None):
+    if write_directory is None:
+        write_directory = os.getcwd()
+    outfilename = os.path.join(write_directory, write_file_name)
+    S = '\n'.join(str(k) for k in input_list)
+    try:
+        with open(outfilename, 'w') as fh:
+            fh.write(S)
+    except:
+        pass
+        return -1
+    return 0
+
+def read_a_list(input_file_name):
+    with open(input_file_name, 'r') as fh:
+        str_input = fh.read()
+    return list(str_input.split())
+
+
 def update_SC_run_file(Data_Cleanup_Run_File, Samples_Clustering_Run_File):
     """ take the results of data cleaning and update the yaml file """
     results_path = os.path.abspath(get_results_directory(Data_Cleanup_Run_File))
