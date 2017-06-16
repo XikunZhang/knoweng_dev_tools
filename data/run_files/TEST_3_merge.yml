@@ -1,4 +1,4 @@
-# transpose a single spreadsheet and write to output file name specified
+# Combine two spreadsheets into one with all samples and phenotypes  and write to output file name specified
 method:              merge
 
 full_file_name_1:    ../data/transform_data/spreadsheet_One.txt
