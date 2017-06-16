@@ -14,11 +14,16 @@ def get_common_samples(run_parameters):
 def merge(run_parameters):
     from transformation_toolbox import read_merge_write
     read_merge_write(run_parameters)
+    
+def select_genes(run_parameters):
+    from transformation_toolbox import read_select_genes_write
+    read_select_genes_write(run_parameters)
 
 SELECT = {
             'transpose': transpose,
             'get_common_samples': get_common_samples,
-            'merge': merge}
+            'merge': merge, 
+            'select_genes': select_genes}
 
 def main():
     import sys
