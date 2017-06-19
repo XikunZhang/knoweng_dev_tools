@@ -208,3 +208,53 @@ def read_cluster_averages_write(run_parameters):
         return 0
     except:
         return -1
+
+    
+def select_categorical_df(spreadsheet_df,phenotype_df,phenotype_id,select_category):
+    """From a genes x samples spreadsheet and a samples x phenotypes spreadsheet, return both spreadsheets with only the samples corresponding to a category in a phenotype.
+    Args:
+        spreadsheet_df:    a genes x samples dataframe
+        phenotype_df       a samples x phenotypes dataframe
+        phenotype_id
+        select_category
+    Returns:
+        spreadsheet_category_df:    a genes x samples dataframe with only the samples corresponding to a category in a phenotype
+        phenotype_category_df:      a samples x phenotypes dataframe with only the samples corresponding to a category in a phenotype
+    """
+    samples_list = phenotype_df.index[phenotype_df[phenotype_id] == select_category]
+    # print(phenotype_df[phenotype_id][2])
+    # print(samples_list)
+    phenotype_category_df = phenotype_df.loc[samples_list]
+    
+    spreadsheet_category_df = spreadsheet_df[samples_list]
+    return spreadsheet_category_df, phenotype_category_df
+
+def read_select_categorical_write(run_parameters):
+    """Read, from a genes x samples spreadsheet and a samples x phenotypes spreadsheet, return both spreadsheets with only the samples corresponding to a category in a phenotype, and write them to new files. 
+    Args:
+        run_parameters:          dict with the following keys:
+            full_file_name_1:    full path name of the first input file(genes x samples dataframe)
+            full_file_name_2:    full path name of the second input file(samples x phenoytpes dataframe)
+            out_file_name_1:       full path name of the first output file
+            out_file_name_2:       full path name of the second output file
+    Returns:
+        STATUS:                 0 if successful
+    
+    """
+    try:
+        input_path1 = run_parameters['full_file_name_1']
+        input_path2 = run_parameters['full_file_name_2']
+        phenotype_id = run_parameters['phenotype_id']
+        select_category = run_parameters['select_category']
+        # print(phenotype_id,select_category)
+        output_path1 = run_parameters['out_file_name_1']
+        output_path2 = run_parameters['out_file_name_2']
+        spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
+        phenotype_df = pd.read_csv(input_path2, sep='\t', index_col=0, header=0)
+        spreadsheet_category_df, phenotype_category_df  = select_categorical_df(spreadsheet_df, phenotype_df, phenotype_id, select_category)
+        spreadsheet_category_df.to_csv(output_path1, sep='\t', index=True, header=True)
+        phenotype_category_df.to_csv(output_path2, sep='\t', index=True, header=True)
+        return 0
+    except:
+        return -1
+    
