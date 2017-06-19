@@ -18,12 +18,17 @@ def merge(run_parameters):
 def select_genes(run_parameters):
     from transformation_toolbox import read_select_genes_write
     read_select_genes_write(run_parameters)
+    
+def cluster_averages(run_parameters):
+    from transformation_toolbox import read_cluster_averages_write
+    read_cluster_averages_write(run_parameters)
 
 SELECT = {
             'transpose': transpose,
             'get_common_samples': get_common_samples,
             'merge': merge, 
-            'select_genes': select_genes}
+            'select_genes': select_genes,
+            'cluster_averages': cluster_averages}
 
 def main():
     import sys

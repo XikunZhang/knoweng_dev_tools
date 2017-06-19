@@ -1,0 +1,9 @@
+# Return a dataframe of averages for each category given a genes x samples dataframe and a samples classification dictionary   and write to output file name specified
+method:              cluster_averages
+
+full_file_name_1:    ../data/transform_data/gene_samples_small.tsv
+full_file_name_2:    ../data/transform_data/gene_samples_small_labels.tsv
+out_file_name:       ../test/gene_samples_small_T4.tsv
+
+# change to the knoweng_dev_tools/test directory then cut and paste this line
+test_dir_run_string: 'python3 ../src/transformation_remake.py -run_directory ../data/run_files -run_file TEST_5_cluster_averages.yml'
