@@ -162,7 +162,7 @@ def read_select_genes_write(run_parameters):
     """
     try:
         input_path1 = run_parameters['full_file_name_1']
-        gene_select_list = read_a_list_file[run_parameters['full_file_name_2']]
+        gene_select_list = read_a_list_file(run_parameters['full_file_name_2'])
         output_path = run_parameters['out_file_name']
         spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         spreadsheet_intersected_df = select_genes_df(spreadsheet_df, gene_select_list)
