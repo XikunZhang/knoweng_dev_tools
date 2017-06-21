@@ -1,5 +1,4 @@
-{genes_samples_spreadsheet_file_name: ../data/transform_data/transform_5_spreadsheet.tsv,
-  genes_samples_spreadsheet_with_category-selected_samples_file_name: ../test/transform_5_spreadsheet_T5.tsv,
+{categorical_phenotypes_file_name: ../test/spreadsheet_Two_T5.txt, catetorical_spreadsheet_file_name: ../test/transform_5_spreadsheet_T5.tsv,
+  genes_samples_spreadsheet_file_name: ../data/transform_data/transform_5_spreadsheet.tsv,
   method: select_categorical, phenotype_id: grade, samples_phenotypes_spreadsheet_file_name: ../data/transform_data/spreadsheet_Two.txt,
-  samples_phenotypes_spreadsheet_with_category-selected_samples_file_name: ../test/spreadsheet_Two_T5.txt,
   select_category: grade 3}
