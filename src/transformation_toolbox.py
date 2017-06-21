@@ -113,15 +113,15 @@ def read_merge_write(run_parameters):
     """Read, combine two spreadsheets into one with all samples and phenotypes(NaN filled), and write it into a new file. 
     Args:
         run_parameters:         dict with the following keys:
-            full_file_name_1:   full path name of first input file
-            full_file_name_2:   full path name of second input file
-            out_file_name:      output file name for input_path1
+            spreadsheet_1_file_name:   full path name of first input file
+            spreadsheet_2_file_name:   full path name of second input file
+            spreadsheet_merge_file_name:      output file name for input_path1
     Returns:
         STATUS:                 0 if successful
     """
-    input_path1 = run_parameters['full_file_name_1']
-    input_path2 = run_parameters['full_file_name_2']
-    output_path = run_parameters['out_file_name']
+    input_path1 = run_parameters['spreadsheet_1_file_name']
+    input_path2 = run_parameters['spreadsheet_2_file_name']
+    output_path = run_parameters['spreadsheet_merge_file_name']
     
     try:
         spreadsheet_1_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
