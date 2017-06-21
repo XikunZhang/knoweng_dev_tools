@@ -39,8 +39,8 @@ def read_transpose_write(run_parameters):
     Returns:
         STATUS:             0 if written successfully
     """
-    input_file_name = run_parameters['input_file_name']
-    output_file_name = run_parameters['output_file_name']
+    input_file_name = run_parameters['spreadsheet_file_name']
+    output_file_name = run_parameters['spreadsheet_transpose_file_name']
     try:
         spreadsheet_df = pd.read_csv(input_file_name, sep='\t', index_col=0, header=0)
         spreadsheet_T_df = transpose_df(spreadsheet_df)
