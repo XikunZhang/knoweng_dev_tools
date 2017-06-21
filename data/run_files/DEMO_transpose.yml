@@ -1,0 +1,2 @@
+{method: transpose, spreadsheet_file_name: ../data/transform_data/spreadsheet_One.txt,
+  spreadsheet_transpose_file_name: ../test/spreadsheet_One_T.txt}

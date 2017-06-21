@@ -1,0 +1,2 @@
+{gene_list_file_name: ../data/transform_data/gene_samples_1_list.txt, method: select_genes,
+  spreadsheet_file_name: ../data/transform_data/gene_samples_1.tsv, spreadsheet_genes_selected_file_name: ../test/gene_samples_1_T3.tsv}
