@@ -34,8 +34,8 @@ def read_transpose_write(run_parameters):
     """ Read, transpose a spreadsheet data frame, and write it to a new file.
     Args:
         run_parameters:     dict with the following keys:
-            input_file_name:    full path name of the input file
-            output_file_name:   full path name of the output file
+            spreadsheet_file_name:    full path name of the input file
+            spreadsheet_transpose_file_name:   full path name of the output file
     Returns:
         STATUS:             0 if written successfully
     """
@@ -72,17 +72,17 @@ def read_get_common_samples_write(run_parameters):
     """ Read, turn two dataframes with sample names in common into one with only the common samples in each, and write them into new files.
     Args:
         run_parameters:     dict with the following keys:
-            full_file_name_1:   full path name of first input file
-            full_file_name_2:   full path name of second input file
-            out_file_name_1:    output file name for full_file_name_1
-            out_file_name_2:    output file name for full_file_name_2
+            spreadsheet_1_file_name:   full path name of first input file
+            spreadsheet_2_file_name:   full path name of second input file
+            spreadsheet_1_common_samples_file_name:    output file name for full_file_name_1
+            spreadsheet_2_common_samples_file_name:    output file name for full_file_name_2
     Returns:                
         STATUS:                 0 if successful
     """
-    full_file_name_1 = run_parameters['full_file_name_1']
-    full_file_name_2 = run_parameters['full_file_name_2']
-    out_file_name_1 = run_parameters['out_file_name_1']
-    out_file_name_2 = run_parameters['out_file_name_2']
+    full_file_name_1 = run_parameters['spreadsheet_1_file_name']
+    full_file_name_2 = run_parameters['spreadsheet_2_file_name']
+    out_file_name_1 = run_parameters['spreadsheet_1_common_samples_file_name']
+    out_file_name_2 = run_parameters['spreadsheet_2_common_samples_file_name']
     
     try:
         sxp_1_df = kn.get_spreadsheet_df(full_file_name_1)
