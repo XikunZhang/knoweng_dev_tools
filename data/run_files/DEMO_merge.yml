@@ -1,0 +1,2 @@
+{method: merge, spreadsheet_1_file_name: ../data/transform_data/spreadsheet_One.txt,
+  spreadsheet_2_file_name: ../data/transform_data/spreadsheet_Two.txt, spreadsheet_merge_file_name: ../test/spreadsheet_T2.txt}
