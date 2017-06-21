@@ -232,23 +232,23 @@ def select_categorical_df(spreadsheet_df,phenotype_df,phenotype_id,select_catego
 def read_select_categorical_write(run_parameters):
     """Read, from a genes x samples spreadsheet and a samples x phenotypes spreadsheet, return both spreadsheets with only the samples corresponding to a category in a phenotype, and write them to new files. 
     Args:
-        run_parameters:          dict with the following keys:
-            full_file_name_1:    full path name of the first input file(genes x samples dataframe)
-            full_file_name_2:    full path name of the second input file(samples x phenoytpes dataframe)
-            out_file_name_1:       full path name of the first output file
-            out_file_name_2:       full path name of the second output file
+        run_parameters:                                  dict with the following keys:
+            genes_samples_spreadsheet_file_name:         full path name of the first input file(genes x samples dataframe)
+            samples_phenotypes_spreadsheet_file_name:    full path name of the second input file(samples x phenoytpes dataframe)
+            genes_samples_spreadsheet_with_category-selected_samples_file_name:       full path name of the first output file
+            samples_phenotypes_spreadsheet_with_category-selected_samples_file_name:  full path name of the second output file
     Returns:
         STATUS:                 0 if successful
     
     """
     try:
-        input_path1 = run_parameters['full_file_name_1']
-        input_path2 = run_parameters['full_file_name_2']
+        input_path1 = run_parameters['genes_samples_spreadsheet_file_name']
+        input_path2 = run_parameters['samples_phenotypes_spreadsheet_file_name']
         phenotype_id = run_parameters['phenotype_id']
         select_category = run_parameters['select_category']
         # print(phenotype_id,select_category)
-        output_path1 = run_parameters['out_file_name_1']
-        output_path2 = run_parameters['out_file_name_2']
+        output_path1 = run_parameters['genes_samples_spreadsheet_with_category-selected_samples_file_name']
+        output_path2 = run_parameters['samples_phenotypes_spreadsheet_with_category-selected_samples_file_name']
         spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         phenotype_df = pd.read_csv(input_path2, sep='\t', index_col=0, header=0)
         spreadsheet_category_df, phenotype_category_df  = select_categorical_df(spreadsheet_df, phenotype_df, phenotype_id, select_category)
