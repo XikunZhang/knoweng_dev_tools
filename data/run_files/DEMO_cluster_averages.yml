@@ -1,0 +1,2 @@
+{method: cluster_averages, sample_classification_dict_file_name: ../data/transform_data/gene_samples_small_labels.tsv,
+  spreadsheet_cluster_averages_file_name: ../test/gene_samples_small_T4.tsv, spreadsheet_file_name: ../data/transform_data/gene_samples_small.tsv}

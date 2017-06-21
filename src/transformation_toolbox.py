@@ -190,17 +190,17 @@ def cluster_averages(spreadsheet_df,labels_df):
 def read_cluster_averages_write(run_parameters):
     """Read, return a dataframe of averages for each catagory given a genes x samples dataframe and a samples classification dictionary, and write it into a new file. 
     Args:
-        run_parameters:          dict with the following keys:
-            full_file_name_1:    full path name of the first input file(genes x samples dataframe)
-            full_file_name_2:    full path name of the second input file(samples classification dictionary)
-            out_file_name:       full path name of the output file
+        run_parameters:                              dict with the following keys:
+            spreadsheet_file_name:                   full path name of the first input file(genes x samples dataframe)
+            sample_classification_dict_file_name:    full path name of the second input file(samples classification dictionary)
+            spreadsheet_cluster_averages_file_name:  full path name of the output file
     Returns:
         STATUS:                 0 if successful
     """
     try:
-        input_path1 = run_parameters['full_file_name_1']
-        input_path2 = run_parameters['full_file_name_2']
-        output_path = run_parameters['out_file_name']
+        input_path1 = run_parameters['spreadsheet_file_name']
+        input_path2 = run_parameters['sample_classification_dict_file_name']
+        output_path = run_parameters['spreadsheet_cluster_averages_file_name']
         spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         labels_df = pd.read_csv(input_path2, sep='\t', index_col=0, names=['sample','cluster_number'])
         cluster_ave_df = cluster_averages(spreadsheet_df,labels_df)
