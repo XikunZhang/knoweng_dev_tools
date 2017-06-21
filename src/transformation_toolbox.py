@@ -154,16 +154,16 @@ def read_select_genes_write(run_parameters):
     """Read, turn one spreadsheet into one with only those genes selected from an input list, and write it to a new file. 
     Args:
         run_parameters:     dict with the following keys:
-            full_file_name_1: full path name of first input file(spreadsheet)
-            full_file_name_2: full path name of second input file(gene selection list)
-            out_file_name:  full path name of output file
+            spreadsheet_file_name: full path name of first input file(spreadsheet)
+            gene_list_file_name: full path name of second input file(gene selection list)
+            spreadsheet_genes_selected_file_name:  full path name of output file
     Returns:
         STATUS:                 0 if successful
     """
     try:
-        input_path1 = run_parameters['full_file_name_1']
-        gene_select_list = read_a_list_file(run_parameters['full_file_name_2'])
-        output_path = run_parameters['out_file_name']
+        input_path1 = run_parameters['spreadsheet_file_name']
+        gene_select_list = read_a_list_file(run_parameters['gene_list_file_name'])
+        output_path = run_parameters['spreadsheet_genes_selected_file_name']
         spreadsheet_df = pd.read_csv(input_path1, sep='\t', index_col=0, header=0)
         spreadsheet_intersected_df = select_genes_df(spreadsheet_df, gene_select_list)
         spreadsheet_intersected_df.to_csv(output_path, sep='\t', index=True, header=True)
